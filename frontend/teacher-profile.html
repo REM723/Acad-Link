@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Profile</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2ecc71;
+      --accent-color: #f39c12;
+      --background-light: #f5f7fa;
+      --text-light: #2c3e50;
+      --card-light: #ffffff;
+      --border-light: #e0e0e0;
+      --background-dark: #1a202c;
+      --text-dark: #f5f7fa;
+      --card-dark: #2d3748;
+      --border-dark: #4a5568;
+      
+      /* Default to light theme */
+      --background: var(--background-light);
+      --text: var(--text-light);
+      --card: var(--card-light);
+      --border: var(--border-light);
+    }
+
+    /* Dark theme class */
+    .dark-theme {
+      --background: var(--background-dark);
+      --text: var(--text-dark);
+      --card: var(--card-dark);
+      --border: var(--border-dark);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+    
+    .header {
+      background-color: var(--card);
+      padding: 20px 30px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      color: var(--text);
+    }
+    
+    .header h1 {
+      color: var(--text);
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text);
+    }
+    
+    .profile-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    
+    .profile-header {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 30px;
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .profile-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      color: #fff;
+      font-weight: 300;
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-info h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    
+    .profile-info .designation {
+      color: var(--text);
+      opacity: 0.7;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .contact-info {
+      display: flex;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    
+    .contact-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--primary-color);
+    }
+    
+    .edit-profile {
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    
+    .edit-profile:hover {
+      background-color: #2980b9;
+    }
+    
+    .profile-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 12px 25px;
+      background-color: var(--card);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px 5px 0 0;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+      color: var(--text);
+      opacity: 0.7;
+    }
+    
+    .tab.active {
+      border-bottom: 3px solid var(--primary-color);
+      color: var(--text);
+      opacity: 1;
+      font-weight: 500;
+    }
+    
+    .tab:hover:not(.active) {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    
+    .tab-content {
+      background-color: var(--card);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-section {
+      margin-bottom: 30px;
+    }
+    
+    .info-section h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .info-label {
+      font-size: 14px;
+      color: var(--text);
+      opacity: 0.7;
+      margin-bottom: 5px;
+    }
+    
+    .info-value {
+      font-size: 16px;
+      color: var(--text);
+    }
+    
+    .skill-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .skill-badge {
+      background-color: rgba(52, 152, 219, 0.2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--primary-color);
+    }
+    
+    .statistics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .stat-card {
+      background-color: var(--card);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: var(--text);
+      opacity: 0.7;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .contact-info {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .statistics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Hidden by default */
+    #teachingTab, #certificationsTab, #scheduleTab {
+      display: none;
+    }
+    
+    #profileTab {
+      display: block;
+    }
+
+    /* DARK THEME SUPPORT */
+    .dark-theme body, body.dark-theme {
+      background-color: #181c24 !important;
+      color: #f5f7fa !important;
+    }
+    .dark-theme .main-content, .dark-theme .card, .dark-theme .profile-card, .dark-theme .modal-content {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .page-title, .dark-theme .card-title, .dark-theme .profile-name, .dark-theme .profile-title, .dark-theme .info-label, .dark-theme .info-value, .dark-theme .section-title {
+      color: #f5f7fa !important;
+    }
+    .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .btn-success, .dark-theme .btn-warning, .dark-theme .btn-secondary {
+      background-color: #3a86ff !important;
+      color: #fff !important;
+      border: none;
+    }
+    .dark-theme .btn:hover, .dark-theme .btn-primary:hover, .dark-theme .btn-success:hover, .dark-theme .btn-warning:hover, .dark-theme .btn-secondary:hover {
+      background-color: #265bb5 !important;
+    }
+    .dark-theme input, .dark-theme select, .dark-theme textarea {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      border: 1px solid #333a4d !important;
+    }
+    .dark-theme .profile-card {
+      border: 1px solid #333a4d !important;
+    }
+    .dark-theme .profile-description {
+      color: #e2e8f0 !important;
+    }
+    .dark-theme .profile-stats {
+      background-color: #1a1f2b !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Teacher Profile</h1>
+    <div class="user-menu">
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fa fa-sun"></i>
+      </button>
+      <button class="edit-profile">Edit Profile</button>
+    </div>
+  </div>
+  <div style="padding: 24px 24px 0 24px;">
+    <button id="back-dashboard-btn" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%); color: #fff; border: none; border-radius: 24px; padding: 10px 22px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(66,153,225,0.15); cursor: pointer; transition: background 0.2s;">
+      <i class="fa fa-arrow-left"></i> Back to Dashboard
+    </button>
+  </div>
+  
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-image">
+        JD
+      </div>
+      <div class="profile-info">
+        <h2>Dr. Safa</h2>
+        <div class="designation">Senior Professor of Computer Science</div>
+        <p>University of Technology, Computer Science Department</p>
+        
+        <div class="contact-info">
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>(123) 456-7890</span>
+          </div>
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Safa.doe@university.edu</span>
+          </div>
+          <div class="contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"></path>
+              <path d="M12 6v6l4 2"></path>
+            </svg>
+            <span>Office Hours: Mon-Thu 10am-2pm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="profile-tabs">
+      <button class="tab active" onclick="openTab('profileTab')">Personal Info</button>
+      <button class="tab" onclick="openTab('teachingTab')">Teaching</button>
+      <button class="tab" onclick="openTab('certificationsTab')">Certifications</button>
+      <button class="tab" onclick="openTab('scheduleTab')">Schedule</button>
+    </div>
+    
+    <div id="profileTab" class="tab-content">
+      <div class="info-section">
+        <h3>Personal Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">Dr.Safa</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Employee ID</span>
+            <span class="info-value">T-CS-2015-084</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Date of Birth</span>
+            <span class="info-value">May 15, 1980</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Joined</span>
+            <span class="info-value">September 2015</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Department</span>
+            <span class="info-value">Computer Science</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Office</span>
+            <span class="info-value">Room 405, Tech Building</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h3>Education & Experience</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Highest Degree</span>
+            <span class="info-value">PhD in Computer Science</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">University</span>
+            <span class="info-value">Massachusetts Institute of Technology</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Years in Teaching</span>
+            <span class="info-value">15+ years</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Industry Experience</span>
+            <span class="info-value">7 years at Tech Solutions Inc.</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h3>Expertise & Skills</h3>
+        <div class="skill-badges">
+          <div class="skill-badge">Database Systems</div>
+          <div class="skill-badge">Network Security</div>
+          <div class="skill-badge">Machine Learning</div>
+          <div class="skill-badge">Artificial Intelligence</div>
+          <div class="skill-badge">Web Development</div>
+          <div class="skill-badge">Software Engineering</div>
+          <div class="skill-badge">Distributed Systems</div>
+          <div class="skill-badge">Computer Architecture</div>
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h3>Teaching Statistics</h3>
+        <div class="statistics-grid">
+          <div class="stat-card">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Current Classes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">187</div>
+            <div class="stat-label">Current Students</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">4.8</div>
+            <div class="stat-label">Average Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="teachingTab" class="tab-content">
+      <div class="info-section">
+        <h3>Current Courses</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">CS301</span>
+            <span class="info-value">Database Management Systems</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CS405</span>
+            <span class="info-value">Network Security</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CS210</span>
+            <span class="info-value">Introduction to Computer Science</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CS550</span>
+            <span class="info-value">Advanced Artificial Intelligence</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CS415</span>
+            <span class="info-value">Web Development</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CS450</span>
+            <span class="info-value">Software Engineering</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="certificationsTab" class="tab-content">
+      <div class="info-section">
+        <h3>Professional Certifications</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Certified Database Professional</span>
+            <span class="info-value">Oracle, 2019</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Certified Network Security Specialist</span>
+            <span class="info-value">CompTIA, 2020</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Artificial Intelligence Certification</span>
+            <span class="info-value">IBM, 2021</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Advanced Teaching Methods</span>
+            <span class="info-value">Education Board, 2022</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="scheduleTab" class="tab-content">
+      <div class="info-section">
+        <h3>Weekly Schedule</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Monday</span>
+            <span class="info-value">CS301: 9am-11am, CS415: 2pm-4pm</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Tuesday</span>
+            <span class="info-value">CS450: 11am-1pm, Office Hours: 2pm-4pm</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Wednesday</span>
+            <span class="info-value">CS405: 9am-11am, CS210: 1pm-3pm</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Thursday</span>
+            <span class="info-value">CS550: 10am-12pm, Department Meeting: 3pm-5pm</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Friday</span>
+            <span class="info-value">Research Day (No Classes)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Initialize theme
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('i');
+    // Theme persistence
+    function setTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        themeIcon.textContent = '';
+      } else {
+        document.body.classList.remove('dark-theme');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        themeIcon.textContent = '';
+      }
+    }
+    // On load, set theme from localStorage
+    let isDarkTheme = localStorage.getItem('theme') === 'dark';
+    setTheme(isDarkTheme);
+    themeToggle.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      setTheme(isDarkTheme);
+      localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+    });
+
+    function openTab(tabName) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(tab => {
+        tab.style.display = 'none';
+      });
+      
+      // Remove active class from all tabs
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show the selected tab content
+      document.getElementById(tabName).style.display = 'block';
+      
+      // Add active class to the clicked tab
+      event.currentTarget.classList.add('active');
+    }
+
+    document.getElementById('back-dashboard-btn').onclick = function() {
+      window.location.href = 'teacher-dashboard.html';
+    };
+
+    // --- Profile Data State ---
+    let profileData = {
+      fullName: 'Dr. Safa ',
+      employeeId: 'T-CS-2015-084',
+      dob: 'May 15, 1980',
+      joined: 'September 2015',
+      department: 'Computer Science',
+      office: 'Room 405, Tech Building',
+      phone: '(123) 456-7890',
+      email: 'Safa.doe@university.edu',
+      officeHours: 'Mon-Thu 10am-2pm',
+      designation: 'Senior Professor of Computer Science',
+      university: 'University of Technology, Computer Science Department',
+      degree: 'PhD in Computer Science',
+      degreeUniversity: 'Massachusetts Institute of Technology',
+      yearsTeaching: '15+ years',
+      industryExp: '7 years at Tech Solutions Inc.'
+    };
+    // --- Render Profile Info ---
+    function renderProfileInfo(editMode = false) {
+      const infoGrid = document.querySelector('#profileTab .info-grid');
+      if (!editMode) {
+        infoGrid.innerHTML = `
+          <div class="info-item"><span class="info-label">Full Name</span><span class="info-value">${profileData.fullName}</span></div>
+          <div class="info-item"><span class="info-label">Employee ID</span><span class="info-value">${profileData.employeeId}</span></div>
+          <div class="info-item"><span class="info-label">Date of Birth</span><span class="info-value">${profileData.dob}</span></div>
+          <div class="info-item"><span class="info-label">Joined</span><span class="info-value">${profileData.joined}</span></div>
+          <div class="info-item"><span class="info-label">Department</span><span class="info-value">${profileData.department}</span></div>
+          <div class="info-item"><span class="info-label">Office</span><span class="info-value">${profileData.office}</span></div>
+        `;
+        document.querySelector('.profile-info h2').textContent = profileData.fullName.split(' ')[0] + ' ' + profileData.fullName.split(' ')[1];
+        document.querySelector('.profile-info .designation').textContent = profileData.designation;
+        document.querySelector('.profile-info p').textContent = profileData.university;
+        document.querySelectorAll('.contact-item')[0].lastElementChild.textContent = profileData.phone;
+        document.querySelectorAll('.contact-item')[1].lastElementChild.textContent = profileData.email;
+        document.querySelectorAll('.contact-item')[2].lastElementChild.textContent = 'Office Hours: ' + profileData.officeHours;
+      } else {
+        infoGrid.innerHTML = `
+          <div class="info-item"><span class="info-label">Full Name</span><input class="info-value" id="edit-fullName" value="${profileData.fullName}"></div>
+          <div class="info-item"><span class="info-label">Employee ID</span><input class="info-value" id="edit-employeeId" value="${profileData.employeeId}"></div>
+          <div class="info-item"><span class="info-label">Date of Birth</span><input class="info-value" id="edit-dob" value="${profileData.dob}"></div>
+          <div class="info-item"><span class="info-label">Joined</span><input class="info-value" id="edit-joined" value="${profileData.joined}"></div>
+          <div class="info-item"><span class="info-label">Department</span><input class="info-value" id="edit-department" value="${profileData.department}"></div>
+          <div class="info-item"><span class="info-label">Office</span><input class="info-value" id="edit-office" value="${profileData.office}"></div>
+        `;
+      }
+    }
+    // --- Edit Profile Button Logic ---
+    const editBtn = document.querySelector('.edit-profile');
+    let isEditMode = false;
+    let saveCancelDiv;
+    editBtn.addEventListener('click', function() {
+      if (!isEditMode) {
+        isEditMode = true;
+        renderProfileInfo(true);
+        // Add Save/Cancel buttons
+        saveCancelDiv = document.createElement('div');
+        saveCancelDiv.style.marginTop = '20px';
+        saveCancelDiv.innerHTML = `
+          <button class="edit-profile" id="saveProfileBtn">Save</button>
+          <button class="edit-profile" id="cancelProfileBtn" style="background:#aaa; margin-left:10px;">Cancel</button>
+        `;
+        document.querySelector('#profileTab .info-section').appendChild(saveCancelDiv);
+        document.getElementById('saveProfileBtn').onclick = function() {
+          // Save values
+          profileData.fullName = document.getElementById('edit-fullName').value;
+          profileData.employeeId = document.getElementById('edit-employeeId').value;
+          profileData.dob = document.getElementById('edit-dob').value;
+          profileData.joined = document.getElementById('edit-joined').value;
+          profileData.department = document.getElementById('edit-department').value;
+          profileData.office = document.getElementById('edit-office').value;
+          isEditMode = false;
+          renderProfileInfo(false);
+          saveCancelDiv.remove();
+        };
+        document.getElementById('cancelProfileBtn').onclick = function() {
+          isEditMode = false;
+          renderProfileInfo(false);
+          saveCancelDiv.remove();
+        };
+      }
+    });
+    // Initial render (ensure up-to-date)
+    renderProfileInfo(false);
+  </script>
+</body>
+</html>

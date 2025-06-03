@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerts & Notifications</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #3a86ff;
+      --background-light: #f5f7fa;
+      --background-dark: #181c24;
+      --card-light: #fff;
+      --card-dark: #232a36;
+      --text-light: #2c3e50;
+      --text-dark: #f5f7fa;
+      --border-light: #e0e0e0;
+      --border-dark: #333a4d;
+      --accent: #ff6b6b;
+    }
+    body {
+      background: var(--background-light);
+      color: var(--text-light);
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .page-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--primary);
+      transition: color 0.3s;
+    }
+    .alerts-section {
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--primary);
+    }
+    .alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .alert-card {
+      background: var(--card-light);
+      color: var(--text-light);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      padding: 20px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      border-left: 5px solid var(--primary);
+      transition: background 0.3s, color 0.3s;
+    }
+    .alert-icon {
+      font-size: 1.6rem;
+      margin-top: 2px;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .alert-content {
+      flex: 1;
+    }
+    .alert-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .alert-time {
+      font-size: 0.95rem;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .alert-message {
+      font-size: 1rem;
+      color: inherit;
+    }
+    .alert-unread {
+      border-left-color: var(--accent);
+      background: linear-gradient(90deg, #f5f7fa 80%, #e0ebff 100%);
+    }
+    .alert-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    .alert-actions button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .alert-actions button:hover {
+      background: #265bb5;
+    }
+    /* DARK THEME */
+    .dark-theme body, body.dark-theme {
+      background: var(--background-dark) !important;
+      color: var(--text-dark) !important;
+    }
+    .dark-theme .alert-card {
+      background: var(--card-dark) !important;
+      color: var(--text-dark) !important;
+      border-left: 5px solid var(--primary) !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18) !important;
+    }
+    .dark-theme .alert-unread {
+      background: linear-gradient(90deg, #232a36 80%, #3a86ff22 100%) !important;
+      border-left-color: var(--accent) !important;
+    }
+    .dark-theme .page-title, .dark-theme .section-title {
+      color: #3a86ff !important;
+    }
+    .dark-theme .theme-toggle {
+      color: #3a86ff !important;
+    }
+    .dark-theme .alert-time {
+      color: #b0b8c1 !important;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 0 4px;
+      }
+      .alert-card {
+        padding: 14px 10px;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div style="padding: 24px 0 0 0;">
+    <button id="back-dashboard-btn" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%); color: #fff; border: none; border-radius: 24px; padding: 10px 22px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(66,153,225,0.15); cursor: pointer; transition: background 0.2s;">
+      <i class="fa fa-arrow-left"></i> Back to Dashboard
+    </button>
+  </div>
+  <div class="container">
+    <div class="page-header">
+      <div class="page-title">Alerts & Notifications</div>
+      <button class="theme-toggle" id="themeToggle"><i class="fa fa-sun"></i></button>
+    </div>
+    <div class="alerts-section">
+      <div class="section-title">Notifications</div>
+      <div class="alerts-list">
+        <div class="alert-card alert-unread">
+          <div class="alert-icon"><i class="fa fa-bell"></i></div>
+          <div class="alert-content">
+            <div class="alert-title">Assignment Grading Due</div>
+            <div class="alert-time">2 hours ago</div>
+            <div class="alert-message">You have 5 assignments pending for grading in Network Security.</div>
+            <div class="alert-actions">
+              <button>View</button>
+              <button>Mark as Read</button>
+            </div>
+          </div>
+        </div>
+        <div class="alert-card">
+          <div class="alert-icon"><i class="fa fa-calendar"></i></div>
+          <div class="alert-content">
+            <div class="alert-title">Upcoming Class</div>
+            <div class="alert-time">Today, 1:00 PM</div>
+            <div class="alert-message">Network Security class is scheduled for today at 1:00 PM.</div>
+            <div class="alert-actions">
+              <button>View</button>
+            </div>
+          </div>
+        </div>
+        <div class="alert-card alert-unread">
+          <div class="alert-icon"><i class="fa fa-envelope"></i></div>
+          <div class="alert-content">
+            <div class="alert-title">New Message from Student</div>
+            <div class="alert-time">10 minutes ago</div>
+            <div class="alert-message">Student John Smith has sent you a message regarding assignment submission.</div>
+            <div class="alert-actions">
+              <button>Reply</button>
+              <button>Mark as Read</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="alerts-section">
+      <div class="section-title">Messages</div>
+      <div class="alerts-list">
+        <div class="alert-card">
+          <div class="alert-icon"><i class="fa fa-envelope"></i></div>
+          <div class="alert-content">
+            <div class="alert-title">Message from Prof. Jane Doe</div>
+            <div class="alert-time">Yesterday</div>
+            <div class="alert-message">Please review the updated course syllabus and provide your feedback.</div>
+            <div class="alert-actions">
+              <button>Reply</button>
+            </div>
+          </div>
+        </div>
+        <div class="alert-card">
+          <div class="alert-icon"><i class="fa fa-envelope"></i></div>
+          <div class="alert-content">
+            <div class="alert-title">Message from Admin</div>
+            <div class="alert-time">2 days ago</div>
+            <div class="alert-message">System maintenance is scheduled for this weekend. Please save your work.</div>
+            <div class="alert-actions">
+              <button>View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // THEME TOGGLE LOGIC
+    function setTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        themeIcon.textContent = '';
+      } else {
+        document.body.classList.remove('dark-theme');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        themeIcon.textContent = '';
+      }
+    }
+    let themeToggle = document.getElementById('themeToggle');
+    let themeIcon = themeToggle.querySelector('i');
+    let isDarkTheme = localStorage.getItem('theme') === 'dark';
+    setTheme(isDarkTheme);
+    themeToggle.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      setTheme(isDarkTheme);
+      localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+    });
+
+    document.getElementById('back-dashboard-btn').onclick = function() {
+      window.location.href = 'teacher-dashboard.html';
+    };
+  </script>
+</body>
+</html> 

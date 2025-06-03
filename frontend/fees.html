@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acad Link - Fees</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+        }
+        
+        .header {
+            background-color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification {
+            margin-right: 15px;
+            position: relative;
+        }
+        
+        .notification .bell {
+            color: #f39c12;
+            font-size: 20px;
+        }
+        
+        .notification .count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user {
+            display: flex;
+            align-items: center;
+            background-color: #f0f3f8;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .user img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .container {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-title i {
+            margin-right: 12px;
+            color: #f39c12;
+            font-size: 28px;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card .label {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+        
+        .card .value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .card .description {
+            font-size: 14px;
+            color: #95a5a6;
+        }
+        
+        .card.total .value {
+            color: #2980b9;
+        }
+        
+        .card.paid .value {
+            color: #27ae60;
+        }
+        
+        .card.due .value {
+            color: #e74c3c;
+        }
+        
+        .card .progress-container {
+            height: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .card .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .card.total .progress-bar {
+            background-color: #3498db;
+            width: 100%;
+        }
+        
+        .card.paid .progress-bar {
+            background-color: #2ecc71;
+            width: 65%;
+        }
+        
+        .card.due .progress-bar {
+            background-color: #e74c3c;
+            width: 35%;
+        }
+        
+        .history-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .export-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .export-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .export-btn i {
+            margin-right: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        table th {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status.paid {
+            background-color: #e8f8f0;
+            color: #27ae60;
+        }
+        
+        .status.pending {
+            background-color: #fef5e7;
+            color: #f39c12;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+        }
+        
+        .payment-method img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 4px;
+        }
+        
+        .invoice-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .invoice-link:hover {
+            text-decoration: underline;
+        }
+        
+        .invoice-link i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .user span {
+                display: none;
+            }
+        }
+
+        /* DARK THEME SUPPORT */
+        body.dark-theme, .dark-theme body {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .container, .dark-theme .card, .dark-theme .history-section, .dark-theme .header {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .page-title, .dark-theme .section-title {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .export-btn {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+        }
+        .dark-theme .btn-outline {
+            background-color: transparent !important;
+            border: 1px solid #3a86ff !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme .label, .dark-theme .value, .dark-theme .description, .dark-theme .section-title {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .status, .dark-theme .status.paid, .dark-theme .status.pending {
+            background-color: #333a4d !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme table, .dark-theme th, .dark-theme td {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            border-color: #333a4d !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  
+
+    <div class="container">
+        <h1 class="page-title">
+            <i class="fas fa-coins"></i>
+            Fees Management
+        </h1>
+
+        <div class="cards">
+            <div class="card total">
+                <div class="label">Total Fees</div>
+                <div class="value">₹95,000</div>
+                <div class="description">Academic Year 2024-25</div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+            <div class="card paid">
+                <div class="label">Paid Fees</div>
+                <div class="value">₹62,000</div>
+                <div class="description">65% of total amount</div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+            <div class="card due">
+                <div class="label">Due Fees</div>
+                <div class="value">₹33,000</div>
+                <div class="description">Due by June 15, 2025</div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="section-header">
+                <h2 class="section-title">Payment History</h2>
+                <button class="export-btn">
+                    <i class="fas fa-download"></i>
+                    Export
+                </button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Payment ID</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>April 12, 2025</td>
+                        <td>TXN-78291</td>
+                        <td>Semester Fees (Installment 3)</td>
+                        <td>₹20,000</td>
+                        <td class="payment-method">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmY5OTAwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iMyIgeT0iNSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE0IiByeD0iMyIvPjxsaW5lIHgxPSIzIiB5MT0iMTAiIHgyPSIyMSIgeTI9IjEwIi8+PC9zdmc+" alt="Credit Card">
+                            Credit Card
+                        </td>
+                        <td><span class="status paid">Paid</span></td>
+                        <td>
+                            <a href="#" class="invoice-link">
+                                <i class="fas fa-file-pdf"></i>
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>February 5, 2025</td>
+                        <td>TXN-67183</td>
+                        <td>Semester Fees (Installment 2)</td>
+                        <td>₹22,000</td>
+                        <td class="payment-method">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzQ5OGRiIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIxIDR2MTZhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWNGEyIDIgMCAwIDEgMi0yaDEwLjE3MmEyIDIgMCAwIDEgMS40MTQuNTg2bDQuODI4IDQuODI4QTIgMiAwIDAgMSAyMSA4LjYxNnoiLz48cGF0aCBkPSJNMTIgMTF2Ni41bTQtM0w4LjUgMTQiLz48L3N2Zz4=" alt="UPI">
+                            UPI
+                        </td>
+                        <td><span class="status paid">Paid</span></td>
+                        <td>
+                            <a href="#" class="invoice-link">
+                                <i class="fas fa-file-pdf"></i>
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>November 15, 2024</td>
+                        <td>TXN-51092</td>
+                        <td>Semester Fees (Installment 1)</td>
+                        <td>₹20,000</td>
+                        <td class="payment-method">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMmVjYzcxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iMiIgeT0iNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE2IiByeD0iMiIvPjxyZWN0IHg9IjExIiB5PSI5IiB3aWR0aD0iNCIgaGVpZ2h0PSI2Ii8+PC9zdmc+" alt="Net Banking">
+                            Net Banking
+                        </td>
+                        <td><span class="status paid">Paid</span></td>
+                        <td>
+                            <a href="#" class="invoice-link">
+                                <i class="fas fa-file-pdf"></i>
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>June 15, 2025</td>
+                        <td>TXN-PNDG</td>
+                        <td>Semester Fees (Final Installment)</td>
+                        <td>₹33,000</td>
+                        <td class="payment-method">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjN2Y4YzhkIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDJ2NE0xMiAxOHY0TTQuOTMgNC45M2wyLjgzIDIuODNNMTYuMjQgMTYuMjRsMi44MyAyLjgzTTIgMTJoNE0xOCAxMmg0TTQuOTMgMTkuMDdsMi44My0yLjgzTTE2LjI0IDcuNzZsMi44My0yLjgzIi8+PC9zdmc+" alt="Pending">
+                            Pending
+                        </td>
+                        <td><span class="status pending">Pending</span></td>
+                        <td>
+                            <a href="#" class="invoice-link">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Pay Now
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Show notification count
+        const notificationCount = document.querySelector('.notification .count');
+        
+        // Add click event to export button
+        const exportBtn = document.querySelector('.export-btn');
+        exportBtn.addEventListener('click', function() {
+            alert('Payment history will be exported as PDF.');
+        });
+        
+        // Add click event to pay now button
+        const payNowBtn = document.querySelector('a[href="#"]:last-of-type');
+        payNowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Redirecting to payment gateway...');
+        });
+    </script>
+
+    <script>
+    (function() {
+      var theme = localStorage.getItem('student-theme');
+      if (theme === 'dark') {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+      }
+    })();
+    </script>
+</body>
+</html>

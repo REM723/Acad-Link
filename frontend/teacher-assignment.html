@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Assignments Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fb;
+    }
+    
+    .container {
+      width: 100%;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 240px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      padding: 20px 0;
+    }
+    
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-item:hover {
+      background-color: #f0f5ff;
+      color: #3182ce;
+    }
+    
+    .sidebar-item.active {
+      background-color: #ebf5ff;
+      color: #3182ce;
+      border-left: 3px solid #3182ce;
+    }
+    
+    .sidebar-item i {
+      margin-right: 12px;
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 32px 40px 40px 40px;
+      width: 100%;
+      overflow-y: auto;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    h1 {
+      color: #2d3748;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    
+    .btn-primary {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: #3182ce;
+    }
+    
+    .btn-primary i {
+      margin-right: 8px;
+    }
+    
+    .stats-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      flex: 1;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      color: #718096;
+      font-size: 14px;
+    }
+    
+    .tab-container {
+      margin-bottom: 24px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+    
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #718096;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .tab:hover {
+      color: #4299e1;
+    }
+    
+    .tab.active {
+      color: #4299e1;
+      border-bottom: 2px solid #4299e1;
+    }
+    
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .search-box {
+      position: relative;
+      width: 300px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+    
+    .filter-dropdown {
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background-color: white;
+      color: #4a5568;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .assignment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .assignment-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .assignment-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .assignment-header {
+      padding: 16px;
+    }
+    
+    .course-tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: white;
+    }
+    
+    .tag-cs {
+      background-color: #4299e1;
+    }
+    
+    .tag-web {
+      background-color: #ed8936;
+    }
+    
+    .tag-db {
+      background-color: #805ad5;
+    }
+    
+    .tag-net {
+      background-color: #e53e3e;
+    }
+    
+    .tag-ai {
+      background-color: #38b2ac;
+    }
+    
+    .tag-ds {
+      background-color: #48bb78;
+    }
+    
+    .assignment-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+    
+    .assignment-course {
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 12px;
+    }
+    
+    .assignment-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    .assignment-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: #f7fafc;
+      border-top: 1px solid #edf2f7;
+    }
+    
+    .submission-count {
+      font-size: 13px;
+      color: #718096;
+    }
+    
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-open {
+      background-color: #ebf8ff;
+      color: #3182ce;
+    }
+    
+    .status-due-soon {
+      background-color: #fffaf0;
+      color: #dd6b20;
+    }
+    
+    .status-closed {
+      background-color: #f0fff4;
+      color: #38a169;
+    }
+    
+    .status-draft {
+      background-color: #f7fafc;
+      color: #718096;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 24px;
+      width: 60%;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    
+    .close-modal {
+      position: absolute;
+      right: 24px;
+      top: 24px;
+      font-size: 20px;
+      color: #a0aec0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .close-modal:hover {
+      color: #4a5568;
+    }
+    
+    .modal-header {
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    .modal-course {
+      font-size: 14px;
+      color: #718096;
+      margin-top: 4px;
+    }
+    
+    .modal-body {
+      margin-bottom: 24px;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .info-label {
+      font-size: 12px;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+    
+    .info-value {
+      font-size: 14px;
+      color: #2d3748;
+      font-weight: 500;
+    }
+    
+    .description-box {
+      padding: 16px;
+      background-color: #f7fafc;
+      border-radius: 6px;
+      margin-bottom: 24px;
+    }
+    
+    .description {
+      font-size: 14px;
+      color: #4a5568;
+      line-height: 1.6;
+    }
+    
+    .submissions-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    
+    .submissions-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #718096;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .submissions-table td {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #4a5568;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .student-name {
+      font-weight: 500;
+      color: #2d3748;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    .btn-secondary {
+      background-color: white;
+      color: #4a5568;
+      border: 1px solid #e2e8f0;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #f7fafc;
+    }
+    
+    /* Progress bar styles */
+    .progress-container {
+      width: 100%;
+      height: 4px;
+      background-color: #edf2f7;
+      border-radius: 2px;
+      margin: 8px 0;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      border-radius: 2px;
+    }
+    
+    .progress-submissions {
+      background-color: #4299e1;
+    }
+    
+    .progress-reviews {
+      background-color: #ed8936;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        padding: 10px 0;
+      }
+      
+      .stats-container {
+        flex-direction: column;
+      }
+      
+      .assignment-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        width: 90%;
+        margin: 10% auto;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* DARK THEME SUPPORT */
+    .dark-theme body, body.dark-theme {
+      background-color: #181c24 !important;
+      color: #f5f7fa !important;
+    }
+    .dark-theme .main-content, .dark-theme .card, .dark-theme .stat-card, .dark-theme .assignment-card, .dark-theme .modal-content {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .page-title, .dark-theme .stat-label, .dark-theme .stat-number, .dark-theme .assignment-title, .dark-theme .assignment-course, .dark-theme .info-label, .dark-theme .info-value, .dark-theme .modal-title, .dark-theme .description {
+      color: #f5f7fa !important;
+    }
+    .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .btn-success, .dark-theme .btn-warning, .dark-theme .btn-secondary {
+      background-color: #3a86ff !important;
+      color: #fff !important;
+      border: none;
+    }
+    .dark-theme .btn:hover, .dark-theme .btn-primary:hover, .dark-theme .btn-success:hover, .dark-theme .btn-warning:hover, .dark-theme .btn-secondary:hover {
+      background-color: #265bb5 !important;
+    }
+    .dark-theme input, .dark-theme select, .dark-theme textarea {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      border: 1px solid #333a4d !important;
+    }
+    .dark-theme .course-tag {
+      color: #fff !important;
+    }
+    .dark-theme .status-badge {
+      color: #fff !important;
+    }
+    .dark-theme .status-open {
+      background-color: #1a365d !important;
+    }
+    .dark-theme .status-due-soon {
+      background-color: #7b341e !important;
+    }
+    .dark-theme .status-closed {
+      background-color: #22543d !important;
+    }
+    .dark-theme .status-draft {
+      background-color: #2d3748 !important;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <div style="padding: 24px 24px 0 24px;">
+      <button id="back-dashboard-btn" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%); color: #fff; border: none; border-radius: 24px; padding: 10px 22px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(66,153,225,0.15); cursor: pointer; transition: background 0.2s;">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </button>
+    </div>
+    <!-- Sidebar -->
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1>Assignments</h1>
+        <button class="btn-primary" id="create-btn">
+          <i class="fas fa-plus"></i> Create Assignment
+        </button>
+      </div>
+      
+      <!-- Statistics Cards -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-number">24</div>
+          <div class="stat-label">Total Assignments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">12</div>
+          <div class="stat-label">Pending Reviews</div>
+          <div class="progress-container">
+            <div class="progress-bar progress-reviews" style="width: 40%;"></div>
+          </div>
+          <div class="stat-label">40% of recent assignments graded</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">8</div>
+          <div class="stat-label">Due This Week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">386</div>
+          <div class="stat-label">Total Submissions</div>
+          <div class="progress-container">
+            <div class="progress-bar progress-submissions" style="width: 78%;"></div>
+          </div>
+          <div class="stat-label">78% submission rate</div>
+        </div>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="tab-container">
+        <div class="tabs">
+          <div class="tab active" data-tab="all">All Assignments</div>
+          <div class="tab" data-tab="active">Active</div>
+          <div class="tab" data-tab="pending">Pending Review</div>
+          <div class="tab" data-tab="drafts">Drafts</div>
+          <div class="tab" data-tab="archived">Archived</div>
+        </div>
+      </div>
+      
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search assignments..." id="search-input">
+        </div>
+        <div>
+          <select class="filter-dropdown" id="course-filter">
+            <option value="all">All Courses</option>
+            <option value="cs">Computer Science</option>
+            <option value="web">Web Development</option>
+            <option value="db">Database Management</option>
+            <option value="net">Network Security</option>
+            <option value="ds">Data Structures</option>
+            <option value="ai">Artificial Intelligence</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Assignment Grid -->
+      <div class="assignment-grid" id="assignment-grid">
+        <!-- Assignment cards will be populated here -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Assignment Detail Modal -->
+  <div class="modal" id="assignment-modal">
+    <div class="modal-content">
+      <span class="close-modal" id="close-modal">
+        <i class="fas fa-times"></i>
+      </span>
+      
+      <div class="modal-header">
+        <div class="course-tag tag-cs" id="modal-tag">Computer Science</div>
+        <h2 class="modal-title" id="modal-title">Assignment Title</h2>
+        <p class="modal-course" id="modal-course">Course Name</p>
+      </div>
+      
+      <div class="modal-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Due Date</span>
+            <span class="info-value" id="modal-due-date">May 10, 2025</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Points</span>
+            <span class="info-value" id="modal-points">100</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Submissions</span>
+            <span class="info-value" id="modal-submissions">24/42</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value" id="modal-status">Open</span>
+          </div>
+        </div>
+        
+        <div class="description-box">
+          <h3 style="margin-bottom: 8px; font-size: 15px;">Description</h3>
+          <p class="description" id="modal-description">
+            In this assignment, students will implement a binary search tree data structure with basic operations including insertion, deletion, and traversal algorithms. The implementation should handle edge cases and demonstrate time complexity analysis.
+          </p>
+        </div>
+        
+        <h3 style="margin-bottom: 12px; font-size: 16px;">Recent Submissions</h3>
+        <table class="submissions-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Submitted On</th>
+              <th>Status</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody id="submissions-table-body">
+            <!-- Submission rows will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn-secondary" id="close-btn">Close</button>
+        <button class="btn-primary" id="grade-btn">
+          <i class="fas fa-check"></i> Grade Submissions
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Assignment Modal -->
+  <div class="modal" id="create-assignment-modal">
+    <div class="modal-content">
+      <span class="close-modal" id="close-create-modal">
+        <i class="fas fa-times"></i>
+      </span>
+      <div class="modal-header">
+        <h2 class="modal-title">Create Assignment</h2>
+      </div>
+      <form id="create-assignment-form">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Title</span>
+            <input type="text" class="form-control" id="new-title" required />
+          </div>
+          <div class="info-item">
+            <span class="info-label">Course</span>
+            <select class="form-control" id="new-course" required>
+              <option value="">Select Course</option>
+              <option value="Computer Science 101">Computer Science 101</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Database Management">Database Management</option>
+              <option value="Network Security">Network Security</option>
+              <option value="Data Structures & Algorithms">Data Structures & Algorithms</option>
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+            </select>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Due Date</span>
+            <input type="date" class="form-control" id="new-due-date" required />
+          </div>
+          <div class="info-item">
+            <span class="info-label">Points</span>
+            <input type="number" class="form-control" id="new-points" min="1" required />
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Description</span>
+          <textarea class="form-control" id="new-description" required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" type="button" id="cancel-create-btn">Cancel</button>
+          <button class="btn-primary" type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Sample data for assignments
+    const assignments = [
+      {
+        id: 1,
+        title: "Binary Search Tree Implementation",
+        course: "Data Structures & Algorithms",
+        courseTag: "ds",
+        dueDate: "May 10, 2025",
+        submissions: "24/38",
+        submissionRate: "63%",
+        points: 100,
+        status: "open",
+        description: "In this assignment, students will implement a binary search tree data structure with basic operations including insertion, deletion, and traversal algorithms. The implementation should handle edge cases and demonstrate time complexity analysis.",
+        recentSubmissions: [
+          { student: "Alex Johnson", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Maya Patel", date: "May 1, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Liam Chen", date: "Apr 30, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 2,
+        title: "Responsive Web Design Project",
+        course: "Web Development",
+        courseTag: "web",
+        dueDate: "May 12, 2025",
+        submissions: "18/35",
+        submissionRate: "51%",
+        points: 150,
+        status: "open",
+        description: "Design and develop a responsive website using HTML5, CSS3, and JavaScript. The website should adapt to different screen sizes and include proper semantic markup, accessibility features, and interactive elements.",
+        recentSubmissions: [
+          { student: "Emma Wilson", date: "May 3, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Noah Martinez", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Sophia Lee", date: "May 1, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 3,
+        title: "Database Normalization Exercise",
+        course: "Database Management",
+        courseTag: "db",
+        dueDate: "May 8, 2025",
+        submissions: "26/30",
+        submissionRate: "87%",
+        points: 75,
+        status: "due-soon",
+        description: "Analyze the given database schema and normalize it to 3NF (Third Normal Form). Identify all functional dependencies, create properly normalized tables, and explain your normalization process with justifications for each step.",
+        recentSubmissions: [
+          { student: "Ethan Brown", date: "May 3, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Olivia Davis", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "William Taylor", date: "May 1, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 4,
+        title: "Network Traffic Analysis",
+        course: "Network Security",
+        courseTag: "net",
+        dueDate: "May 15, 2025",
+        submissions: "10/22",
+        submissionRate: "45%",
+        points: 125,
+        status: "open",
+        description: "Using Wireshark, capture and analyze network traffic to identify security threats and vulnerabilities. Document your findings, including potential attack vectors and recommended security measures to mitigate identified risks.",
+        recentSubmissions: [
+          { student: "Ava Anderson", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "James Thompson", date: "May 1, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Isabella Martin", date: "Apr 30, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 5,
+        title: "Object-Oriented Design Patterns",
+        course: "Computer Science 101",
+        courseTag: "cs",
+        dueDate: "May 5, 2025",
+        submissions: "35/42",
+        submissionRate: "83%",
+        points: 100,
+        status: "due-soon",
+        description: "Implement three design patterns (Singleton, Factory, and Observer) in a small application. Demonstrate the appropriate use of each pattern and explain how they improve the design of your application.",
+        recentSubmissions: [
+          { student: "Benjamin Garcia", date: "May 3, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Mia Rodriguez", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Jacob Wilson", date: "May 1, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 6,
+        title: "Machine Learning Classification Algorithm",
+        course: "Artificial Intelligence",
+        courseTag: "ai",
+        dueDate: "May 20, 2025",
+        submissions: "8/20",
+        submissionRate: "40%",
+        points: 150,
+        status: "open",
+        description: "Implement a classification algorithm (either Decision Trees, Random Forest, or Support Vector Machines) on the provided dataset. Train the model, evaluate its performance, and compare results with at least one other classification algorithm.",
+        recentSubmissions: [
+          { student: "Charlotte Clark", date: "May 3, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Lucas Wright", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Amelia Turner", date: "Apr 30, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 7,
+        title: "SQL Query Optimization",
+        course: "Database Management",
+        courseTag: "db",
+        dueDate: "Apr 30, 2025",
+        submissions: "28/30",
+        submissionRate: "93%",
+        points: 75,
+        status: "closed",
+        description: "Analyze the given SQL queries and optimize them for better performance. Create execution plans, identify bottlenecks, and implement improvements using indexing, query rewriting, and other optimization techniques.",
+        recentSubmissions: [
+          { student: "Henry Adams", date: "Apr 28, 2025", status: "Graded", grade: "92/100" },
+          { student: "Evelyn Baker", date: "Apr 28, 2025", status: "Graded", grade: "88/100" },
+          { student: "Alexander King", date: "Apr 27, 2025", status: "Graded", grade: "95/100" }
+        ]
+      },
+      {
+        id: 8,
+        title: "Recursive Algorithm Implementation",
+        course: "Data Structures & Algorithms",
+        courseTag: "ds",
+        dueDate: "May 18, 2025",
+        submissions: "20/38",
+        submissionRate: "53%",
+        points: 100,
+        status: "open",
+        description: "Implement both recursive and iterative solutions for three classic problems: Fibonacci sequence, Tower of Hanoi, and binary tree traversal. Compare the time and space complexity of both approaches for each problem.",
+        recentSubmissions: [
+          { student: "Scarlett Nelson", date: "May 3, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Sebastian Hill", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Zoe Mitchell", date: "May 1, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 9,
+        title: "Cybersecurity Risk Assessment",
+        course: "Network Security",
+        courseTag: "net",
+        dueDate: "May 25, 2025",
+        submissions: "5/22",
+        submissionRate: "23%",
+        points: 125,
+        status: "open",
+        description: "Conduct a comprehensive risk assessment for the provided case study organization. Identify assets, threats, vulnerabilities, and existing controls. Calculate risk levels and recommend appropriate security controls based on industry standards.",
+        recentSubmissions: [
+          { student: "Jack Phillips", date: "May 2, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Chloe Stewart", date: "May 1, 2025", status: "Submitted", grade: "Not graded" },
+          { student: "Daniel Young", date: "Apr 30, 2025", status: "Submitted", grade: "Not graded" }
+        ]
+      },
+      {
+        id: 10,
+        title: "JavaScript Framework Comparison",
+        course: "Web Development",
+        courseTag: "web",
+        dueDate: "Apr 25, 2025",
+        submissions: "33/35",
+        submissionRate: "94%",
+        points: 100,
+        status: "closed",
+        description: "Compare and contrast two modern JavaScript frameworks (React, Angular, Vue, etc.) by building the same application with both frameworks. Analyze performance, development experience, learning curve, and community support.",
+        recentSubmissions: [
+          { student: "Lily Cooper", date: "Apr 24, 2025", status: "Graded", grade: "90/100" },
+          { student: "Christopher Reed", date: "Apr 23, 2025", status: "Graded", grade: "85/100" },
+          { student: "Grace Morris", date: "Apr 23, 2025", status: "Graded", grade: "95/100" }
+        ]
+      },
+      {
+        id: 11,
+        title: "Neural Network Implementation",
+        course: "Artificial Intelligence",
+        courseTag: "ai",
+        dueDate: "May 30, 2025",
+        submissions: "0/20",
+        submissionRate: "0%",
+        points: 200,
+        status: "draft"
+      }
+    ];
+
+    // Modal logic for Create Assignment
+    const createBtn = document.getElementById('create-btn');
+    const createModal = document.getElementById('create-assignment-modal');
+    const closeCreateModal = document.getElementById('close-create-modal');
+    const cancelCreateBtn = document.getElementById('cancel-create-btn');
+    const createForm = document.getElementById('create-assignment-form');
+
+    createBtn.addEventListener('click', () => {
+      createModal.style.display = 'block';
+    });
+    closeCreateModal.addEventListener('click', () => {
+      createModal.style.display = 'none';
+    });
+    cancelCreateBtn.addEventListener('click', () => {
+      createModal.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+      if (e.target === createModal) createModal.style.display = 'none';
+    });
+
+    createForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const title = document.getElementById('new-title').value;
+      const course = document.getElementById('new-course').value;
+      const dueDate = document.getElementById('new-due-date').value;
+      const points = document.getElementById('new-points').value;
+      const description = document.getElementById('new-description').value;
+      let courseTag = 'cs';
+      switch(course) {
+        case 'Web Development': courseTag = 'web'; break;
+        case 'Database Management': courseTag = 'db'; break;
+        case 'Network Security': courseTag = 'net'; break;
+        case 'Data Structures & Algorithms': courseTag = 'ds'; break;
+        case 'Artificial Intelligence': courseTag = 'ai'; break;
+      }
+      assignments.push({
+        id: assignments.length + 1,
+        title,
+        course,
+        courseTag,
+        dueDate: new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        submissions: '0/0',
+        submissionRate: '0%',
+        points: parseInt(points),
+        status: 'draft',
+        description,
+        recentSubmissions: []
+      });
+      createModal.style.display = 'none';
+      this.reset();
+      // Re-render assignment grid
+      renderAssignments();
+    });
+
+    // Assignment grid rendering (add this function if not present)
+    function renderAssignments() {
+      const grid = document.getElementById('assignment-grid');
+      grid.innerHTML = '';
+      assignments.forEach((a, idx) => {
+        const card = document.createElement('div');
+        card.className = 'assignment-card';
+        card.innerHTML = `
+          <div class="assignment-header">
+            <div class="course-tag tag-${a.courseTag}">${a.course}</div>
+            <div class="assignment-title">${a.title}</div>
+            <div class="assignment-course">Due: ${a.dueDate} • ${a.points} pts</div>
+            <div class="assignment-meta">
+              <span>${a.submissions} submissions</span>
+              <span class="status-badge status-${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span>
+            </div>
+          </div>
+          <div style="padding: 0 16px 16px 16px; text-align: right;">
+            <button class="btn-secondary" onclick="deleteAssignment(${idx})">Delete</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Add deleteAssignment function
+    function deleteAssignment(idx) {
+      if (confirm('Are you sure you want to delete this assignment?')) {
+        assignments.splice(idx, 1);
+        renderAssignments();
+      }
+    }
+
+    // Initial render
+    renderAssignments();
+
+    document.getElementById('back-dashboard-btn').onclick = function() {
+      window.location.href = 'teacher-dashboard.html';
+    };
+
+    // THEME TOGGLE LOGIC
+    function setTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+        if (themeIcon) {
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+          themeIcon.textContent = '';
+        }
+      } else {
+        document.body.classList.remove('dark-theme');
+        if (themeIcon) {
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+          themeIcon.textContent = '';
+        }
+      }
+    }
+    // Add theme button if not present
+    let themeToggle = document.getElementById('themeToggle');
+    let themeIcon;
+    if (!themeToggle) {
+      themeToggle = document.createElement('button');
+      themeToggle.id = 'themeToggle';
+      themeToggle.className = 'theme-toggle';
+      themeIcon = document.createElement('i');
+      themeIcon.className = 'fa fa-sun';
+      themeToggle.appendChild(themeIcon);
+      themeToggle.style.position = 'absolute';
+      themeToggle.style.top = '24px';
+      themeToggle.style.right = '32px';
+      themeToggle.style.background = 'none';
+      themeToggle.style.border = 'none';
+      themeToggle.style.fontSize = '22px';
+      themeToggle.style.cursor = 'pointer';
+      document.body.appendChild(themeToggle);
+    } else {
+      themeIcon = themeToggle.querySelector('i');
+    }
+    let isDarkTheme = localStorage.getItem('theme') === 'dark';
+    setTheme(isDarkTheme);
+    themeToggle.addEventListener('click', () => {
+      isDarkTheme = !isDarkTheme;
+      setTheme(isDarkTheme);
+      localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>

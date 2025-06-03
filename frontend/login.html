@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Portal - Login</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #f39c12;
+            --background-light: #f5f7fa;
+            --text-light: #2c3e50;
+            --card-light: #ffffff;
+            --border-light: #e0e0e0;
+            
+            --background-dark: #1a202c;
+            --text-dark: #f5f7fa;
+            --card-dark: #2d3748;
+            --border-dark: #4a5568;
+        }
+
+        .light-theme {
+            --background: var(--background-light);
+            --text: var(--text-light);
+            --card: var(--card-light);
+            --border: var(--border-light);
+        }
+
+        .dark-theme {
+            --background: var(--background-dark);
+            --text: var(--text-dark);
+            --card: var(--card-dark);
+            --border: var(--border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background-color: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header img {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background-color: var(--card);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+        }
+
+        .user-type {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .type-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            color: var(--text);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .show-password-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.2rem;
+            padding: 0;
+        }
+
+        .show-password-btn:hover {
+            color: var(--primary-color);
+        }
+
+        /* Add error styles */
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .error {
+            border-color: #e74c3c !important;
+        }
+
+        .form-group input.error:focus {
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3);
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
+    
+    <div class="container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUoko4aGH9-9mtvI8DS5KYIiDSXtUm9QiN5g&s" alt="University Logo">
+                <h1>Acad Link</h1>
+                <p>Sign in to access your dashboard</p>
+            </div>
+            
+            <form class="login-form" id="login-form">
+                <div class="user-type">
+                    <div class="type-option">
+                        <input type="radio" id="student" name="userType" value="student" checked>
+                        <label for="student">Student</label>
+                    </div>
+                    <div class="type-option">
+                        <input type="radio" id="teacher" name="userType" value="teacher">
+                        <label for="teacher">Teacher</label>
+                    </div>
+                    <div class="type-option">
+                        <input type="radio" id="admin" name="userType" value="admin">
+                        <label for="admin">Admin</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username / ID</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-input-container">
+                        <input type="password" id="password" name="password" required>
+                        <button type="button" class="show-password-btn" onclick="togglePassword('password')">👁️</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+                
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </form>
+            
+            <div class="signup-link">
+                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        &copy; 2025 Acad Link. All rights reserved.
+    </footer>
+
+    <script>
+        // Theme toggle
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeToggle.textContent = '🌙';
+            }
+        });
+        
+        // Form validation and error handling
+        function showError(input, message) {
+            const formGroup = input.parentElement;
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            formGroup.appendChild(errorDiv);
+            input.classList.add('error');
+        }
+
+        function clearError(input) {
+            const formGroup = input.parentElement;
+            const errorDiv = formGroup.querySelector('.error-message');
+            if (errorDiv) {
+                formGroup.removeChild(errorDiv);
+            }
+            input.classList.remove('error');
+        }
+
+        // Show password functionality
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const showPasswordBtn = passwordInput.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                showPasswordBtn.textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                showPasswordBtn.textContent = '👁️';
+            }
+        }
+        
+        // Login form submission
+        const loginForm = document.getElementById('login-form');
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Validate inputs
+            if (!username) {
+                showError(document.getElementById('username'), 'Please enter your username');
+                return;
+            }
+            
+            if (!password) {
+                showError(document.getElementById('password'), 'Please enter your password');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5001/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, role: userType })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store the token and user data in localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userType', userType);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('userData', JSON.stringify(data.user));
+                    
+                    // Redirect based on user type
+                    switch(userType) {
+                        case 'student':
+                            window.location.href = 'student-dashboard.html';
+                            break;
+                        case 'teacher':
+                            window.location.href = 'teacher-dashboard.html';
+                            break;
+                        case 'admin':
+                            window.location.href = 'admin-dashboard.html';
+                            break;
+                        default:
+                            window.location.href = 'index.html';
+                    }
+                } else {
+                    // Show error message from server
+                    const errorMessage = data.message || 'Login failed. Please check your credentials.';
+                    showError(document.getElementById('username'), errorMessage);
+                    showError(document.getElementById('password'), '');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    alert('Unable to connect to the server. Please make sure the backend server is running.');
+                } else {
+                    alert('An error occurred during login. Please try again.');
+                }
+            }
+        });
+
+        // Add input event listeners for real-time validation
+        document.getElementById('username').addEventListener('input', function() {
+            clearError(this);
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            clearError(this);
+        });
+    </script>
+</body>
+</html>

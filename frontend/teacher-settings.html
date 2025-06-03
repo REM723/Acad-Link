@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 30px;
+        }
+        
+        .settings-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .settings-button:hover {
+            background-color: #0b5ed7;
+        }
+        
+        .settings-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .settings-container {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .settings-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .settings-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .settings-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #0d6efd;
+            outline: none;
+        }
+        
+        .full-width {
+            grid-column: span 2;
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            grid-column: span 2;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+        
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            margin-right: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e5e5e5;
+        }
+        
+        .profile-picture {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #f0f0f0;
+        }
+        
+        .profile-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .file-upload {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .file-upload:hover {
+            background-color: #e5e5e5;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ff4d4d;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .back-btn-container {
+            padding: 24px 0 0 24px;
+        }
+        #back-dashboard-btn {
+            background: linear-gradient(90deg, #3a8dde 0%, #4cb8ed 100%);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 10px 22px;
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(66,153,225,0.10);
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin: 0 0 32px 0;
+            outline: none;
+        }
+        #back-dashboard-btn:hover {
+            background: linear-gradient(90deg, #4cb8ed 0%, #3a8dde 100%);
+            box-shadow: 0 4px 16px rgba(66,153,225,0.18);
+        }
+        
+        /* DARK THEME SUPPORT */
+        .dark-theme body, body.dark-theme {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .main-content, .dark-theme .card, .dark-theme .settings-card, .dark-theme .modal-content {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .page-title, .dark-theme .card-title, .dark-theme .settings-title, .dark-theme .section-title, .dark-theme .setting-label, .dark-theme .setting-value, .dark-theme .modal-title, .dark-theme .form-label, .dark-theme .info-text {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .btn-success, .dark-theme .btn-warning, .dark-theme .btn-secondary {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+            border: none;
+        }
+        .dark-theme .btn:hover, .dark-theme .btn-primary:hover, .dark-theme .btn-success:hover, .dark-theme .btn-warning:hover, .dark-theme .btn-secondary:hover {
+            background-color: #265bb5 !important;
+        }
+        .dark-theme input, .dark-theme select, .dark-theme textarea {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            border: 1px solid #333a4d !important;
+        }
+        .dark-theme .settings-card {
+            border: 1px solid #333a4d !important;
+        }
+        .dark-theme .setting-description {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .toggle-switch {
+            background-color: #333a4d !important;
+        }
+        .dark-theme .toggle-switch::before {
+            background-color: #f5f7fa !important;
+        }
+        .dark-theme .toggle-switch.active {
+            background-color: #3a86ff !important;
+        }
+        .dark-theme .form-control:focus {
+            border-color: #3a86ff !important;
+            box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2) !important;
+        }
+        .dark-theme .settings-section {
+            border-bottom: 1px solid #333a4d !important;
+        }
+        .dark-theme .settings-section:last-child {
+            border-bottom: none !important;
+        }
+        .dark-theme .settings-header h1 {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .settings-container {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+        }
+        .dark-theme .settings-header {
+            border-bottom: 1px solid #333a4d !important;
+        }
+        .dark-theme .settings-description {
+            color: #e2e8f0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="back-btn-container">
+        <button id="back-dashboard-btn">Back to Dashboard</button>
+    </div>
+    <button class="settings-button" id="settings-button">
+        <span class="settings-icon">⚙️</span>
+        Settings
+    </button>
+
+    
+        <div class="settings-container">
+            <div class="settings-header">
+                <h1>Teacher Settings</h1>
+                <p class="settings-description">Update your personal information and preferences</p>
+            </div>
+            
+            <div class="alert alert-success" id="success-alert">
+                Your settings have been updated successfully!
+            </div>
+            
+            <form class="settings-form" id="settings-form">
+                <div class="profile-upload full-width">
+                    <img src="/api/placeholder/100/100" alt="Profile Picture" class="profile-picture" id="profile-preview">
+                    <label for="profile-pic" class="file-upload">
+                        Change Profile Picture
+                        <input type="file" id="profile-pic" accept="image/*">
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first-name" placeholder="Enter your first name" value="John">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last-name" placeholder="Enter your last name" value="Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Student ID</label>
+                    <input type="text" class="form-control" id="student-id" placeholder="Enter your student ID" value="STU12345" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" value="john.smith@university.edu">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" value="(555) 123-4567">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" value="2000-01-15">
+                </div>
+                
+                <div class="form-group full-width">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" placeholder="Enter your address" value="123 Campus Drive">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="Enter your city" value="University City">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">State/Province</label>
+                    <input type="text" class="form-control" id="state" placeholder="Enter your state" value="California">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" id="postal-code" placeholder="Enter your postal code" value="90210">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <input type="text" class="form-control" id="country" placeholder="Enter your country" value="United States">
+                </div>
+                
+                <div class="buttons-container">
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle Settings Button Click
+            document.getElementById('settings-button').addEventListener('click', function() {
+                // Navigate to the settings page
+                console.log('Settings button clicked');
+                // For demonstration purposes, we're already on the settings page
+                // In a real application, this would be:
+                // window.location.href = '/settings';
+                
+                // For demo purposes, let's toggle the settings container visibility
+                const settingsContainer = document.querySelector('.settings-container');
+                if (settingsContainer.style.display === 'none') {
+                    settingsContainer.style.display = 'block';
+                }
+            });
+            
+            // Handle file upload for profile picture
+            document.getElementById('profile-pic').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profile-preview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Handle form submission
+            document.getElementById('settings-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Collect form data
+                const formData = {
+                    firstName: document.getElementById('first-name').value,
+                    lastName: document.getElementById('last-name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    dob: document.getElementById('dob').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    postalCode: document.getElementById('postal-code').value,
+                    country: document.getElementById('country').value
+                };
+                
+                // In a real application, you would send this data to a server
+                console.log('Saving settings:', formData);
+                
+                // Show success message
+                const successAlert = document.getElementById('success-alert');
+                successAlert.style.display = 'block';
+                
+                // Hide success message after 3 seconds
+                setTimeout(function() {
+                    successAlert.style.display = 'none';
+                }, 3000);
+            });
+            
+            // Handle cancel button
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                // In a real application, this might navigate back or reset the form
+                console.log('Cancel button clicked');
+                // Example of form reset:
+                // document.getElementById('settings-form').reset();
+            });
+            
+            // Add a back button functionality if needed
+            document.getElementById('cancel-btn').addEventListener('click', function() {
+                console.log('Navigating back to main page');
+                // In a real application:
+                // window.location.href = '/dashboard';
+            });
+        });
+
+        document.getElementById('back-dashboard-btn').onclick = function() {
+            window.location.href = 'teacher-dashboard.html';
+        };
+
+        // THEME TOGGLE LOGIC
+        function setTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+                if (themeIcon) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                    themeIcon.textContent = '';
+                }
+            } else {
+                document.body.classList.remove('dark-theme');
+                if (themeIcon) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                    themeIcon.textContent = '';
+                }
+            }
+        }
+        // Add theme button if not present
+        let themeToggle = document.getElementById('themeToggle');
+        let themeIcon;
+        if (!themeToggle) {
+            themeToggle = document.createElement('button');
+            themeToggle.id = 'themeToggle';
+            themeToggle.className = 'theme-toggle';
+            themeIcon = document.createElement('i');
+            themeIcon.className = 'fa fa-sun';
+            themeToggle.appendChild(themeIcon);
+            themeToggle.style.position = 'absolute';
+            themeToggle.style.top = '24px';
+            themeToggle.style.right = '32px';
+            themeToggle.style.background = 'none';
+            themeToggle.style.border = 'none';
+            themeToggle.style.fontSize = '22px';
+            themeToggle.style.cursor = 'pointer';
+            document.body.appendChild(themeToggle);
+        } else {
+            themeIcon = themeToggle.querySelector('i');
+        }
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+        setTheme(isDarkTheme);
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            setTheme(isDarkTheme);
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

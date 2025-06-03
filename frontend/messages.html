@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Messages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #3182ce;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2c5282;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #cbd5e0;
+            color: #4a5568;
+        }
+        
+        .btn-outline:hover {
+            background-color: #edf2f7;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            color: #718096;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #3182ce;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #3182ce;
+        }
+        
+        .content-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .section-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .section-header h2 {
+            font-size: 16px;
+            color: #2d3748;
+        }
+        
+        .section-content {
+            padding: 0;
+        }
+        
+        .item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+        
+        .item:hover {
+            background-color: #f7fafc;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .item-title {
+            font-weight: 500;
+            color: #2d3748;
+            font-size: 14px;
+        }
+        
+        .item-date {
+            color: #718096;
+            font-size: 12px;
+        }
+        
+        .item-content {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .badge-red {
+            background-color: #fed7d7;
+            color: #e53e3e;
+        }
+        
+        .badge-yellow {
+            background-color: #fefcbf;
+            color: #d69e2e;
+        }
+        
+        .badge-blue {
+            background-color: #bee3f8;
+            color: #3182ce;
+        }
+        
+        .badge-green {
+            background-color: #c6f6d5;
+            color: #38a169;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .unread-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #3182ce;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        .important-date {
+            display: flex;
+            align-items: center;
+        }
+        
+        .date-box {
+            min-width: 60px;
+            text-align: center;
+            padding: 5px;
+            background-color: #ebf8ff;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        
+        .date-box .month {
+            font-size: 12px;
+            color: #3182ce;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .date-box .day {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c5282;
+        }
+        
+        .date-info {
+            flex: 1;
+        }
+
+        /* DARK THEME SUPPORT */
+        body.dark-theme, .dark-theme body {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .container, .dark-theme .content-section, .dark-theme .header, .dark-theme .tabs, .dark-theme .tab-content {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+        }
+        .dark-theme .btn-outline {
+            background-color: transparent !important;
+            border: 1px solid #3a86ff !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme .item, .dark-theme .item-content, .dark-theme .item-title, .dark-theme .item-date {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .badge {
+            background-color: #333a4d !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme, .dark-theme body {
+            color: #f5f7fa !important;
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme label, .dark-theme .section-header, .dark-theme .btn, .dark-theme .btn-primary {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .settings-description, .dark-theme .item-content, .dark-theme .item-date, .dark-theme .btn-outline, .dark-theme .badge {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .item, .dark-theme .item-title {
+            color: #f5f7fa !important;
+        }
+        .dark-theme #back-dashboard-btn {
+            background: linear-gradient(90deg, #232a36 0%, #3a86ff 100%) !important;
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding: 24px 0 0 0;">
+        <button id="back-dashboard-btn" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%); color: #fff; border: none; border-radius: 24px; padding: 10px 22px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(66,153,225,0.15); cursor: pointer; transition: background 0.2s;">
+            <span style='font-size:18px;'>&larr;</span> Back to Student Dashboard
+        </button>
+    </div>
+    <div class="container">
+        <div class="header">
+            <h1>Messages</h1>
+            <div class="header-buttons">
+                <button class="btn btn-outline">Mark All as Read</button>
+                <button class="btn btn-primary">New Message</button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="notifications">Notifications</div>
+            <div class="tab" data-tab="important-dates">Important Dates</div>
+            <div class="tab" data-tab="alerts">Alerts</div>
+            <div class="tab" data-tab="inbox">Inbox</div>
+        </div>
+        
+        <!-- Notifications Tab -->
+        <div class="tab-content active" id="notifications">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Recent Notifications</h2>
+                </div>
+                <div class="section-content">
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                Assignment Graded: Database Project
+                                <span class="badge badge-green">Grade: A</span>
+                            </div>
+                            <div class="item-date">Today, 2:30 PM</div>
+                        </div>
+                        <div class="item-content">
+                            Your Database Management project has been graded. You can view detailed feedback in the Assignments section.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                New Discussion in Network Security
+                            </div>
+                            <div class="item-date">Yesterday, 5:15 PM</div>
+                        </div>
+                        <div class="item-content">
+                            Prof. Williams has started a new discussion thread: "Recent Cybersecurity Breaches Analysis". Join the conversation now.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                Course Material Updated: Software Engineering
+                            </div>
+                            <div class="item-date">May 2, 11:20 AM</div>
+                        </div>
+                        <div class="item-content">
+                            New lecture slides and reading materials for next week's class have been uploaded.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                Library Book Due Soon
+                            </div>
+                            <div class="item-date">May 1, 9:00 AM</div>
+                        </div>
+                        <div class="item-content">
+                            "Design Patterns: Elements of Reusable Object-Oriented Software" is due on May 7. Please return or renew.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Important Dates Tab -->
+        <div class="tab-content" id="important-dates">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Academic Calendar</h2>
+                </div>
+                <div class="section-content">
+                    <div class="item important-date">
+                        <div class="date-box">
+                            <div class="month">May</div>
+                            <div class="day">10</div>
+                        </div>
+                        <div class="date-info">
+                            <div class="item-title">Network Security Exam</div>
+                            <div class="item-content">9:00 AM - 11:00 AM, Room CS-301</div>
+                        </div>
+                    </div>
+                    <div class="item important-date">
+                        <div class="date-box">
+                            <div class="month">May</div>
+                            <div class="day">15</div>
+                        </div>
+                        <div class="date-info">
+                            <div class="item-title">Database Management Exam</div>
+                            <div class="item-content">1:00 PM - 3:00 PM, Room CS-205</div>
+                        </div>
+                    </div>
+                    <div class="item important-date">
+                        <div class="date-box">
+                            <div class="month">May</div>
+                            <div class="day">18</div>
+                        </div>
+                        <div class="date-info">
+                            <div class="item-title">Web Development Project Submission Deadline</div>
+                            <div class="item-content">Submit via the course portal before 11:59 PM</div>
+                        </div>
+                    </div>
+                    <div class="item important-date">
+                        <div class="date-box">
+                            <div class="month">May</div>
+                            <div class="day">22</div>
+                        </div>
+                        <div class="date-info">
+                            <div class="item-title">Software Engineering Exam</div>
+                            <div class="item-content">10:00 AM - 12:30 PM, Room CS-405</div>
+                        </div>
+                    </div>
+                    <div class="item important-date">
+                        <div class="date-box">
+                            <div class="month">May</div>
+                            <div class="day">25</div>
+                        </div>
+                        <div class="date-info">
+                            <div class="item-title">Artificial Intelligence Final Project Presentation</div>
+                            <div class="item-content">Group presentations starting at 2:00 PM, Conference Hall</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alerts Tab -->
+        <div class="tab-content" id="alerts">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Critical Alerts</h2>
+                </div>
+                <div class="section-content">
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                Low Attendance Warning
+                                <span class="badge badge-red">Urgent</span>
+                            </div>
+                            <div class="item-date">May 3, 10:00 AM</div>
+                        </div>
+                        <div class="item-content">
+                            Your attendance in "Network Security" is below the minimum requirement (75%). Current: 65%. Please improve attendance to qualify for the exam.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                Tuition Fee Reminder
+                                <span class="badge badge-yellow">Important</span>
+                            </div>
+                            <div class="item-date">May 2, 9:30 AM</div>
+                        </div>
+                        <div class="item-content">
+                            Second installment of tuition fees is due by May 15. Please clear all pending payments to avoid late fees.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                System Maintenance
+                                <span class="badge badge-blue">Info</span>
+                            </div>
+                            <div class="item-date">May 1, 3:45 PM</div>
+                        </div>
+                        <div class="item-content">
+                            The student portal will be unavailable for maintenance on May 7 from 2:00 AM to 6:00 AM. Please plan accordingly.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Inbox Tab -->
+        <div class="tab-content" id="inbox">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>Messages</h2>
+                </div>
+                <div class="section-content">
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                Prof. Johnson (Software Engineering)
+                            </div>
+                            <div class="item-date">Today, 11:45 AM</div>
+                        </div>
+                        <div class="item-content">
+                            Re: Project Guidance - I've reviewed your project proposal. Let's schedule a meeting to discuss the technical requirements in more detail...
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                <span class="unread-indicator"></span>
+                                Academic Advisor
+                            </div>
+                            <div class="item-date">Yesterday, 3:20 PM</div>
+                        </div>
+                        <div class="item-content">
+                            Course Registration Reminder - Don't forget to register for next semester's courses. The registration portal opens on May 20...
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                Library Services
+                            </div>
+                            <div class="item-date">May 2, 10:15 AM</div>
+                        </div>
+                        <div class="item-content">
+                            Extended Hours During Finals - The library will be open 24/7 from May 8 to May 25 to support students during the exam period...
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-header">
+                            <div class="item-title">
+                                Student Council
+                            </div>
+                            <div class="item-date">April 30, 5:00 PM</div>
+                        </div>
+                        <div class="item-content">
+                            End-of-Semester Event - You're invited to the annual End-of-Semester celebration on May 28 at the University Center...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Add click event to items for a real-world feel
+            document.querySelectorAll('.item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove unread indicator when clicked
+                    const unreadDot = this.querySelector('.unread-indicator');
+                    if (unreadDot) {
+                        unreadDot.style.display = 'none';
+                    }
+                });
+            });
+            
+            // "Mark All as Read" button functionality
+            document.querySelector('.btn-outline').addEventListener('click', function() {
+                document.querySelectorAll('.unread-indicator').forEach(dot => {
+                    dot.style.display = 'none';
+                });
+            });
+        });
+    </script>
+
+    <script>
+    (function() {
+      var theme = localStorage.getItem('student-theme');
+      if (theme === 'dark') {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+      }
+    })();
+    </script>
+
+    <script>
+    document.getElementById('back-dashboard-btn').onclick = function() {
+      window.location.href = 'student-dashboard.html';
+    };
+    </script>
+</body>
+</html>

@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acad Link - Teacher Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #f39c12;
+            --background-light: #f5f7fa;
+            --text-light: #2c3e50;
+            --card-light: #ffffff;
+            --border-light: #e0e0e0;
+            --background-dark: #1a202c;
+            --text-dark: #f5f7fa;
+            --card-dark: #2d3748;
+            --border-dark: #4a5568;
+            
+            /* Default to light theme */
+            --background: var(--background-light);
+            --text: var(--text-light);
+            --card: var(--card-light);
+            --border: var(--border-light);
+        }
+
+        /* Dark theme class */
+        .dark-theme {
+            --background: var(--background-dark);
+            --text: var(--text-dark);
+            --card: var(--card-dark);
+            --border: var(--border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Header styles */
+        header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px;
+            height: 70px;
+            background-color: var(--card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .logo img {
+            width: 40px;
+            margin-right: 10px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .notifications .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--card);
+            color: var(--text);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-brand {
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand img {
+            width: 35px;
+            margin-right: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left-color: var(--primary-color);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 20px;
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            margin-left: 0;
+            padding: 90px 40px 40px 40px;
+            max-width: 100vw;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-blue {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--primary-color);
+        }
+
+        .icon-green {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .icon-orange {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--accent-color);
+        }
+
+        .icon-red {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .card-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .card-label {
+            color: var(--text);
+            opacity: 0.7;
+            font-size: 14px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .progress-blue {
+            background-color: var(--primary-color);
+        }
+
+        .progress-green {
+            background-color: var(--secondary-color);
+        }
+
+        .progress-orange {
+            background-color: var(--accent-color);
+        }
+
+        .detail-text {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .subject-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .subject-tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .tag-blue {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--primary-color);
+        }
+
+        .tag-green {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .tag-yellow {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--accent-color);
+        }
+
+        .tag-purple {
+            background-color: rgba(155, 89, 182, 0.2);
+            color: #9b59b6;
+        }
+
+        .tag-red {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .chart-container {
+            background-color: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .sidebar-brand span, .menu-item span {
+                display: none;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            header {
+                left: 70px;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .user-profile span {
+                display: none;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Icons using FontAwesome classes */
+        .fa {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Custom icons using emoji as placeholder */
+        .fa-dashboard:before { content: "📊"; }
+        .fa-user:before { content: "👤"; }
+        .fa-book:before { content: "📚"; }
+        .fa-tasks:before { content: "📝"; }
+        .fa-users:before { content: "👥"; }
+        .fa-cog:before { content: "⚙️"; }
+        .fa-calendar:before { content: "📅"; }
+        .fa-chart-bar:before { content: "📊"; }
+        .fa-check:before { content: "✓"; }
+        .fa-bell:before { content: "🔔"; }
+        .fa-sun:before { content: "☀️"; }
+        .fa-moon:before { content: "🌙"; }
+
+        /* DARK THEME SUPPORT */
+        .dark-theme body, body.dark-theme {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .main-content, .dark-theme .card, .dark-theme .stat-card, .dark-theme .modal-content {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .page-title, .dark-theme .card-title, .dark-theme .stat-label, .dark-theme .stat-number, .dark-theme .info-label, .dark-theme .info-value, .dark-theme .section-title, .dark-theme .logo, .dark-theme .sidebar-brand, .dark-theme .menu-item, .dark-theme .dashboard-cards .card-title, .dark-theme .chart-title, .dark-theme .info-item span {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .btn-success, .dark-theme .btn-warning, .dark-theme .btn-secondary {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+            border: none;
+        }
+        .dark-theme .btn:hover, .dark-theme .btn-primary:hover, .dark-theme .btn-success:hover, .dark-theme .btn-warning:hover, .dark-theme .btn-secondary:hover {
+            background-color: #265bb5 !important;
+        }
+        .dark-theme input, .dark-theme select, .dark-theme textarea {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            border: 1px solid #333a4d !important;
+        }
+        .dark-theme .stat-card {
+            border: 1px solid #333a4d !important;
+        }
+        .dark-theme .stat-icon {
+            color: #3a86ff !important;
+        }
+        .dark-theme .stat-description {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .card-label {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .detail-text {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .subject-tag {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .tag-blue {
+            background-color: rgba(58, 134, 255, 0.2) !important;
+        }
+        .dark-theme .tag-green {
+            background-color: rgba(46, 204, 113, 0.2) !important;
+        }
+        .dark-theme .tag-yellow {
+            background-color: rgba(243, 156, 18, 0.2) !important;
+        }
+        .dark-theme .tag-purple {
+            background-color: rgba(155, 89, 182, 0.2) !important;
+        }
+        .dark-theme .tag-red {
+            background-color: rgba(231, 76, 60, 0.2) !important;
+        }
+
+        .sidebar-menu .menu-item {
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .sidebar-menu .menu-item:hover, .sidebar-menu .menu-item.active {
+            background: linear-gradient(90deg, #e0ebff 0%, #f5f7fa 100%);
+            color: #3a86ff;
+            transform: translateX(6px) scale(1.04);
+        }
+        .dark-theme .sidebar-menu .menu-item:hover, .dark-theme .sidebar-menu .menu-item.active {
+            background: linear-gradient(90deg, #232a36 0%, #3a86ff22 100%);
+            color: #3a86ff;
+        }
+        .card-icon svg {
+            width: 38px;
+            height: 38px;
+            transition: transform 0.2s;
+        }
+        .card:hover .card-icon svg {
+            transform: scale(1.15) rotate(-6deg);
+        }
+        .card {
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(58,134,255,0.13);
+            transform: translateY(-4px) scale(1.02);
+        }
+        .logout-btn {
+            background: linear-gradient(90deg, #ff6b6b 0%, #ffbe0b 100%);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            margin-left: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255,107,107,0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(90deg, #ffbe0b 0%, #ff6b6b 100%);
+            box-shadow: 0 4px 16px rgba(255,107,107,0.18);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="padding: 24px 24px 0 24px;">
+            <button id="back-dashboard-btn" style="display: flex; align-items: center; gap: 8px; background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%); color: #fff; border: none; border-radius: 24px; padding: 10px 22px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(66,153,225,0.15); cursor: not-allowed; opacity: 0.5;" disabled>
+                <i class="fa fa-arrow-left"></i> Back to Dashboard
+            </button>
+        </div>
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f393.svg" alt="Logo" style="width: 35px; margin-right: 10px;">
+                <span style="font-weight: bold; color: #3a86ff;">Acad Link</span>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="#" class="menu-item active">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="2" fill="#3a86ff"/><rect x="14" y="3" width="7" height="7" rx="2" fill="#ffbe0b"/><rect x="14" y="14" width="7" height="7" rx="2" fill="#00b4d8"/><rect x="3" y="14" width="7" height="7" rx="2" fill="#43aa8b"/></svg>
+                            </span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-profile.html" class="menu-item">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#3a86ff"/><ellipse cx="12" cy="17" rx="7" ry="4" fill="#bdb2ff"/></svg>
+                            </span>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-Courses.html" class="menu-item">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="3" fill="#ffbe0b"/><rect x="7" y="9" width="10" height="6" rx="2" fill="#3a86ff"/></svg>
+                            </span>
+                            <span>Courses</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-assignment.html" class="menu-item">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ff006e"/><rect x="7" y="7" width="10" height="10" rx="2" fill="#fff"/><rect x="9" y="9" width="6" height="2" rx="1" fill="#3a86ff"/><rect x="9" y="13" width="6" height="2" rx="1" fill="#3a86ff"/></svg>
+                            </span>
+                            <span>Assignments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-Attendees.html" class="menu-item">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="10" r="4" fill="#43aa8b"/><circle cx="16" cy="10" r="4" fill="#ffbe0b"/><ellipse cx="12" cy="18" rx="8" ry="4" fill="#bdb2ff"/></svg>
+                            </span>
+                            <span>Attendees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="teacher-settings.html" class="menu-item">
+                            <span style="display:inline-block;width:28px;vertical-align:middle;">
+                                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#bdb2ff"/><path d="M12 8v4l3 3" stroke="#3a86ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <div class="logo" style="font-size: 2rem; font-weight: bold; color: #2c3e50; display: flex; align-items: center;">
+                <span style="display:inline-block;width:38px;vertical-align:middle;margin-right:10px;">
+                    <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="4" fill="#3a86ff"/><rect x="6" y="10" width="12" height="4" rx="2" fill="#bdb2ff"/></svg>
+                </span>
+                Teacher Dashboard
+            </div>
+            <div class="user-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="notifications" style="position:relative;">
+                    <span style="display:inline-block;width:28px;vertical-align:middle;">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a6 6 0 0 1 6 6v3.5c0 .8.3 1.6.9 2.1l.7.7c.6.6.9 1.4.9 2.1V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.6c0-.8.3-1.6.9-2.1l.7-.7c.6-.6.9-1.4.9-2.1V8a6 6 0 0 1 6-6z" fill="#ffbe0b"/><circle cx="18" cy="6" r="3" fill="#ff006e"/></svg>
+                    </span>
+                    <div class="badge" style="position:absolute;top:-8px;right:-8px;background:#ff006e;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;">3</div>
+                </div>
+                <div class="user-profile" onclick="window.location.href='teacher-profile.html'">
+                    <img src="/api/placeholder/40/40" alt="User" style="border-radius:50%;border:2px solid #3a86ff;">
+                    <span style="display:inline-flex;align-items:center;margin-left:6px;">
+                        <svg viewBox="0 0 24 24" fill="none" width="22" height="22"><circle cx="12" cy="8" r="4" fill="#3a86ff"/><ellipse cx="12" cy="17" rx="7" ry="4" fill="#bdb2ff"/></svg>
+                        <span style="margin-left:6px;">Prof.Safa  </span>
+                    </span>
+                </div>
+                <button class="logout-btn" id="logoutBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M16 17l5-5-5-5M21 12H9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <!-- Classes Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Classes</h3>
+                        <div class="card-icon icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" width="38" height="38"><rect x="3" y="5" width="18" height="14" rx="3" fill="#3a86ff"/><rect x="7" y="9" width="10" height="6" rx="2" fill="#bdb2ff"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value">6</div>
+                    <div class="card-label">Classes this semester</div>
+                    <div class="subject-tags">
+                        <div class="subject-tag tag-blue">Computer Science</div>
+                        <div class="subject-tag tag-green">Network Security</div>
+                        <div class="subject-tag tag-yellow">Database Mgmt</div>
+                    </div>
+                </div>
+
+                <!-- Students Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Students</h3>
+                        <div class="card-icon icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" width="38" height="38"><circle cx="8" cy="10" r="4" fill="#43aa8b"/><circle cx="16" cy="10" r="4" fill="#ffbe0b"/><ellipse cx="12" cy="18" rx="8" ry="4" fill="#bdb2ff"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value">187</div>
+                    <div class="card-label">Enrolled in your courses</div>
+                    <div class="progress-container">
+                        <div class="progress-bar progress-green" style="width: 75%;"></div>
+                    </div>
+                    <div class="detail-text">75% attendance rate overall</div>
+                </div>
+
+                <!-- Assignments Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Assignments</h3>
+                        <div class="card-icon icon-orange">
+                            <svg viewBox="0 0 24 24" fill="none" width="38" height="38"><rect x="4" y="4" width="16" height="16" rx="4" fill="#ff006e"/><rect x="7" y="7" width="10" height="10" rx="2" fill="#fff"/><rect x="9" y="9" width="6" height="2" rx="1" fill="#3a86ff"/><rect x="9" y="13" width="6" height="2" rx="1" fill="#3a86ff"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value">12</div>
+                    <div class="card-label">Pending reviews</div>
+                    <div class="progress-container">
+                        <div class="progress-bar progress-orange" style="width: 40%;"></div>
+                    </div>
+                    <div class="detail-text">40% of recent assignments graded</div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Course Performance Analytics</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: rgba(52, 152, 219, 0.7);"></div>
+                            <span>Attendance</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: rgba(46, 204, 113, 0.7);"></div>
+                            <span>Assignment Completion</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: rgba(243, 156, 18, 0.7);"></div>
+                            <span>Exam Performance</span>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="performanceChart"></canvas>
+            </div>
+
+            <!-- Upcoming Events and Sessions -->
+            <div class="dashboard-cards">
+                <!-- Upcoming Classes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Upcoming Classes</h3>
+                        <div class="card-icon icon-blue">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <span>Network Security</span>
+                            <span>Today, 1:00 PM</span>
+                        </li>
+                        <li class="info-item">
+                            <span>Database Management</span>
+                            <span>Today, 3:30 PM</span>
+                        </li>
+                        <li class="info-item">
+                            <span>Software Engineering</span>
+                            <span>Tomorrow, 10:00 AM</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Pending Tasks -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending Tasks</h3>
+                        <div class="card-icon icon-red">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <span>Grade Network Security Assignments</span>
+                            <span>Due Today</span>
+                        </li>
+                        <li class="info-item">
+                            <span>Prepare Web Dev Final Exam</span>
+                            <span>Due May 10</span>
+                        </li>
+                        <li class="info-item">
+                            <span>Submit Course Evaluation</span>
+                            <span>Due May 15</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize theme
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        // Theme persistence
+        function setTheme(isDark) {
+          if (isDark) {
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            themeIcon.textContent = '';
+          } else {
+            document.body.classList.remove('dark-theme');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            themeIcon.textContent = '';
+          }
+        }
+        // On load, set theme from localStorage
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+        setTheme(isDarkTheme);
+        themeToggle.addEventListener('click', () => {
+          isDarkTheme = !isDarkTheme;
+          setTheme(isDarkTheme);
+          localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+        
+        // Initialize charts
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        
+        // Function to update chart colors based on theme
+        function updateChartColors() {
+            const isDark = document.body.classList.contains('dark-theme');
+            const textColor = isDark ? '#f5f7fa' : '#2c3e50';
+            
+            performanceChart.options.scales.x.ticks.color = textColor;
+            performanceChart.options.scales.y.ticks.color = textColor;
+            performanceChart.options.plugins.legend.labels.color = textColor;
+            performanceChart.update();
+        }
+        
+        // Create chart
+        const performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Computer Science', 'Network Security', 'Database Mgmt', 'Software Eng', 'Web Dev', 'AI'],
+                datasets: [
+                    {
+                        label: 'Attendance',
+                        data: [85, 78, 92, 88, 75, 82],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Assignment Completion',
+                        data: [92, 85, 78, 90, 82, 75],
+                        backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Exam Performance',
+                        data: [75, 82, 88, 76, 80, 70],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: 'rgba(243, 156, 18, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Update chart colors initially
+        updateChartColors();
+        
+        // Update chart colors when theme changes
+        themeToggle.addEventListener('click', updateChartColors);
+        
+        // Make menu items interactive
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Only prevent default for internal links (href="#")
+                if (item.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        // Add click event for bell/notifications
+        const notificationsBtn = document.querySelector('.notifications');
+        if (notificationsBtn) {
+          notificationsBtn.addEventListener('click', function() {
+            window.location.href = 'alerts.html';
+          });
+        }
+
+        document.getElementById('logoutBtn').onclick = function() {
+            // Clear theme and any session data
+            localStorage.clear();
+            window.location.href = 'login.html';
+        };
+    </script>
+</body>
+</html>

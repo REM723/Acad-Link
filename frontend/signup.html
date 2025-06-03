@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Portal - Sign Up</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #f39c12;
+            --background-light: #f5f7fa;
+            --text-light: #2c3e50;
+            --card-light: #ffffff;
+            --border-light: #e0e0e0;
+            
+            --background-dark: #1a202c;
+            --text-dark: #f5f7fa;
+            --card-dark: #2d3748;
+            --border-dark: #4a5568;
+        }
+
+        .light-theme {
+            --background: var(--background-light);
+            --text: var(--text-light);
+            --card: var(--card-light);
+            --border: var(--border-light);
+        }
+
+        .dark-theme {
+            --background: var(--background-dark);
+            --text: var(--text-dark);
+            --card: var(--card-dark);
+            --border: var(--border-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .signup-card {
+            background-color: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 550px;
+            transition: all 0.3s ease;
+        }
+
+        .signup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .signup-header img {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
+
+        .signup-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .signup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background-color: var(--card);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+        }
+
+        .user-type {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .type-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .signup-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .signup-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            color: var(--text);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .user-type-container {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .user-type-label {
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .password-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .show-password-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 1.2rem;
+            padding: 0;
+        }
+
+        .show-password-btn:hover {
+            color: var(--primary-color);
+        }
+
+        /* Add error styles */
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .error {
+            border-color: #e74c3c !important;
+        }
+
+        .form-group input.error:focus {
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3);
+        }
+    </style>
+</head>
+<body class="light-theme">
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
+    
+    <div class="container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUoko4aGH9-9mtvI8DS5KYIiDSXtUm9QiN5g&s" alt="University Logo" alt="University Logo">
+                <h1>Create Account</h1>
+                <p>Join the University Portal</p>
+            </div>
+            
+            <form class="signup-form" id="signup-form">
+                <div class="user-type-container">
+                    <div class="user-type-label">Select User Type:</div>
+                    <div class="user-type">
+                        <div class="type-option">
+                            <input type="radio" id="student" name="userType" value="student" checked>
+                            <label for="student">Student</label>
+                        </div>
+                        <div class="type-option">
+                            <input type="radio" id="teacher" name="userType" value="teacher">
+                            <label for="teacher">Teacher</label>
+                        </div>
+                        <div class="type-option">
+                            <input type="radio" id="admin" name="userType" value="admin">
+                            <label for="admin">Admin</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                </div>
+                
+                <div class="form-group" id="studentIdGroup">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" name="studentId">
+                </div>
+                
+                <div class="form-group" id="teacherIdGroup" style="display: none;">
+                    <label for="teacherId">Teacher ID</label>
+                    <input type="text" id="teacherId" name="teacherId">
+                </div>
+                
+                <div class="form-group" id="adminIdGroup" style="display: none;">
+                    <label for="adminId">Admin ID</label>
+                    <input type="text" id="adminId" name="adminId">
+                </div>
+
+                <div class="form-group" id="departmentGroup">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department">
+                </div>
+
+                <div class="form-group" id="semesterGroup">
+                    <label for="semester">Semester</label>
+                    <input type="number" id="semester" name="semester" min="1" max="8">
+                </div>
+
+                <div class="form-group" id="designationGroup" style="display: none;">
+                    <label for="designation">Designation</label>
+                    <input type="text" id="designation" name="designation">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="password-input-container">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="show-password-btn" onclick="togglePassword('password')">👁️</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="password-input-container">
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <button type="button" class="show-password-btn" onclick="togglePassword('confirmPassword')">👁️</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="signup-btn">Create Account</button>
+            </form>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2024 University Portal. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            body.classList.toggle('dark-theme');
+            themeToggle.textContent = body.classList.contains('light-theme') ? '🌙' : '☀️';
+        });
+
+        // Show password functionality
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const showPasswordBtn = passwordInput.nextElementSibling;
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                showPasswordBtn.textContent = '👁️‍🗨️';
+            } else {
+                passwordInput.type = 'password';
+                showPasswordBtn.textContent = '👁️';
+            }
+        }
+
+        // Form validation and error handling
+        function showError(input, message) {
+            const formGroup = input.parentElement;
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            formGroup.appendChild(errorDiv);
+            input.classList.add('error');
+        }
+
+        function clearError(input) {
+            const formGroup = input.parentElement;
+            const errorDiv = formGroup.querySelector('.error-message');
+            if (errorDiv) {
+                formGroup.removeChild(errorDiv);
+            }
+            input.classList.remove('error');
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const re = /^\+?[\d\s-]{10,}$/;
+            return re.test(phone);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+
+        // Show/hide role-specific fields based on user type selection
+        const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+        const studentIdGroup = document.getElementById('studentIdGroup');
+        const teacherIdGroup = document.getElementById('teacherIdGroup');
+        const adminIdGroup = document.getElementById('adminIdGroup');
+        const departmentGroup = document.getElementById('departmentGroup');
+        const semesterGroup = document.getElementById('semesterGroup');
+        const designationGroup = document.getElementById('designationGroup');
+
+        // Function to update field requirements based on role
+        function updateFieldRequirements(selectedType) {
+            // Reset all fields
+            document.getElementById('studentId').required = false;
+            document.getElementById('teacherId').required = false;
+            document.getElementById('adminId').required = false;
+            document.getElementById('department').required = false;
+            document.getElementById('semester').required = false;
+            document.getElementById('designation').required = false;
+
+            // Show/hide groups
+            studentIdGroup.style.display = selectedType === 'student' ? 'block' : 'none';
+            teacherIdGroup.style.display = selectedType === 'teacher' ? 'block' : 'none';
+            adminIdGroup.style.display = selectedType === 'admin' ? 'block' : 'none';
+            semesterGroup.style.display = selectedType === 'student' ? 'block' : 'none';
+            designationGroup.style.display = selectedType === 'teacher' ? 'block' : 'none';
+
+            // Set required fields based on role
+            if (selectedType === 'student') {
+                document.getElementById('studentId').required = true;
+                document.getElementById('department').required = true;
+                document.getElementById('semester').required = true;
+            } else if (selectedType === 'teacher') {
+                document.getElementById('teacherId').required = true;
+                document.getElementById('department').required = true;
+                document.getElementById('designation').required = true;
+            } else if (selectedType === 'admin') {
+                document.getElementById('adminId').required = true;
+                document.getElementById('department').required = true;
+            }
+        }
+
+        // Initialize with default role (student)
+        updateFieldRequirements('student');
+
+        userTypeRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                updateFieldRequirements(radio.value);
+            });
+        });
+
+        // Signup form handling
+        const signupForm = document.getElementById('signup-form');
+        
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            
+            // Get form data
+            const formData = new FormData(signupForm);
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            
+            // Validate email
+            const email = formData.get('email');
+            if (!validateEmail(email)) {
+                showError(document.getElementById('email'), 'Please enter a valid email address');
+                return;
+            }
+            
+            // Validate phone number
+            const phoneNumber = formData.get('phoneNumber');
+            if (!validatePhone(phoneNumber)) {
+                showError(document.getElementById('phoneNumber'), 'Please enter a valid phone number');
+                return;
+            }
+            
+            // Validate password
+            const password = formData.get('password');
+            if (!validatePassword(password)) {
+                showError(document.getElementById('password'), 'Password must be at least 8 characters long');
+                return;
+            }
+            
+            // Validate passwords match
+            const confirmPassword = formData.get('confirmPassword');
+            if (password !== confirmPassword) {
+                showError(document.getElementById('confirmPassword'), 'Passwords do not match');
+                return;
+            }
+            
+            // Get the appropriate ID based on user type
+            let userId = '';
+            if (userType === 'student') {
+                userId = formData.get('studentId');
+            } else if (userType === 'teacher') {
+                userId = formData.get('teacherId');
+            } else if (userType === 'admin') {
+                userId = formData.get('adminId');
+            }
+            
+            // Validate required fields based on role
+            if (!userId) {
+                const idField = userType === 'student' ? 'studentId' : 
+                              userType === 'teacher' ? 'teacherId' : 'adminId';
+                showError(document.getElementById(idField), 'Please enter your ID');
+                return;
+            }
+
+            if (!formData.get('department')) {
+                showError(document.getElementById('department'), 'Please enter your department');
+                return;
+            }
+
+            if (userType === 'student' && !formData.get('semester')) {
+                showError(document.getElementById('semester'), 'Please enter your semester');
+                return;
+            }
+
+            if (userType === 'teacher' && !formData.get('designation')) {
+                showError(document.getElementById('designation'), 'Please enter your designation');
+                return;
+            }
+            
+            // Prepare data based on user type
+            const userData = {
+                username: userId,
+                password: password,
+                email: email,
+                role: userType,
+                full_name: `${formData.get('firstName')} ${formData.get('lastName')}`,
+                department: formData.get('department'),
+                phone_number: formData.get('phoneNumber')
+            };
+
+            // Add role-specific data
+            if (userType === 'student') {
+                userData.roll_number = userId;
+                userData.semester = parseInt(formData.get('semester'));
+            } else if (userType === 'teacher') {
+                userData.teacher_code = userId;
+                userData.designation = formData.get('designation');
+            } else if (userType === 'admin') {
+                userData.admin_code = userId;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5001/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Signup successful! Please login with your credentials.');
+                    window.location.href = 'login.html';
+                } else {
+                    // Show error message from server
+                    const errorMessage = data.message || 'Signup failed. Please try again.';
+                    alert(errorMessage);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                if (error.message.includes('Failed to fetch')) {
+                    alert('Unable to connect to the server. Please make sure the backend server is running.');
+                } else {
+                    alert('An error occurred during signup. Please try again.');
+                }
+            }
+        });
+
+        // Add input event listeners for real-time validation
+        document.getElementById('email').addEventListener('input', function() {
+            clearError(this);
+            if (!validateEmail(this.value)) {
+                showError(this, 'Please enter a valid email address');
+            }
+        });
+
+        document.getElementById('phoneNumber').addEventListener('input', function() {
+            clearError(this);
+            if (!validatePhone(this.value)) {
+                showError(this, 'Please enter a valid phone number');
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            clearError(this);
+            if (!validatePassword(this.value)) {
+                showError(this, 'Password must be at least 8 characters long');
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            clearError(this);
+            const password = document.getElementById('password').value;
+            if (this.value !== password) {
+                showError(this, 'Passwords do not match');
+            }
+        });
+    </script>
+</body>
+</html>

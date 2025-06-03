@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header h1 svg {
+            margin-right: 10px;
+            fill: #3498db;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .card-subtitle {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar .progress {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .progress-blue {
+            background-color: #3498db;
+        }
+        
+        .progress-green {
+            background-color: #2ecc71;
+        }
+        
+        .progress-orange {
+            background-color: #f39c12;
+        }
+        
+        .progress-red {
+            background-color: #e74c3c;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .table-title {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+            border-bottom: 1px solid #eee;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .present {
+            background-color: #e6f7ee;
+            color: #2ecc71;
+        }
+        
+        .absent {
+            background-color: #fde8e8;
+            color: #e74c3c;
+        }
+        
+        .late {
+            background-color: #fff4e6;
+            color: #f39c12;
+        }
+        
+        .calendar-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .month-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .month-nav button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .month-nav button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .current-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .weekday {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            padding: 10px 0;
+        }
+        
+        .day {
+            aspect-ratio: 1/1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        .day-number {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .day-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .day.present {
+            background-color: #e6f7ee;
+        }
+        
+        .day.absent {
+            background-color: #fde8e8;
+        }
+        
+        .day.late {
+            background-color: #fff4e6;
+        }
+        
+        .day.present .day-status {
+            background-color: #2ecc71;
+        }
+        
+        .day.absent .day-status {
+            background-color: #e74c3c;
+        }
+        
+        .day.late .day-status {
+            background-color: #f39c12;
+        }
+        
+        .day:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .day.selected {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-present {
+            background-color: #2ecc71;
+        }
+        
+        .legend-absent {
+            background-color: #e74c3c;
+        }
+        
+        .legend-late {
+            background-color: #f39c12;
+        }
+        
+        @media (max-width: 768px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .calendar {
+                gap: 2px;
+            }
+            
+            .day-number {
+                font-size: 12px;
+            }
+        }
+    </style>
+    <style>
+    /* DARK THEME SUPPORT */
+    body.dark-theme, .dark-theme body {
+      background-color: #181c24 !important;
+      color: #f5f7fa !important;
+    }
+    .dark-theme .container, .dark-theme .attendance-card, .dark-theme .header, .dark-theme .summary-section, .dark-theme .table-container {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+      color: #f5f7fa !important;
+    }
+    .dark-theme .btn, .dark-theme .btn-primary {
+      background-color: #3a86ff !important;
+      color: #fff !important;
+    }
+    .dark-theme .btn-outline {
+      background-color: transparent !important;
+      border: 1px solid #3a86ff !important;
+      color: #3a86ff !important;
+    }
+    .dark-theme .attendance-info, .dark-theme .attendance-title, .dark-theme .attendance-description {
+      color: #e2e8f0 !important;
+    }
+    .dark-theme .badge, .dark-theme .status-badge {
+      background-color: #333a4d !important;
+      color: #3a86ff !important;
+    }
+    .dark-theme table, .dark-theme th, .dark-theme td {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      border-color: #333a4d !important;
+    }
+    .dark-theme .card-title, .dark-theme .table-title, .dark-theme .btn, .dark-theme .btn-primary {
+      color: #f5f7fa !important;
+    }
+    .dark-theme .card-subtitle, .dark-theme .attendance-info, .dark-theme .attendance-title, .dark-theme .attendance-description, .dark-theme .btn-outline, .dark-theme .badge, .dark-theme .status-badge {
+      color: #e2e8f0 !important;
+    }
+    .dark-theme td, .dark-theme th, .dark-theme .card-value {
+      color: #f5f7fa !important;
+    }
+    .dark-theme .card, .dark-theme .summary-cards .card {
+      background-color: #232a36 !important;
+      color: #f5f7fa !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M7 5h10v2h2V3H5v4h2V5zm10 16v-6h2v-2H5v2h2v6H5v2h14v-2h-2zm-4 0h-2v-6h2v6z"/>
+                </svg>
+                Attendance Tracker
+            </h1>
+        </div>
+        
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-title">Overall Attendance</div>
+                <div class="card-value">85%</div>
+                <div class="card-subtitle">15 days attended out of 18</div>
+                <div class="progress-bar">
+                    <div class="progress progress-blue" style="width: 85%;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Network Security</div>
+                <div class="card-value">90%</div>
+                <div class="card-subtitle">9 days attended out of 10</div>
+                <div class="progress-bar">
+                    <div class="progress progress-green" style="width: 90%;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Database Management</div>
+                <div class="card-value">80%</div>
+                <div class="card-subtitle">8 days attended out of 10</div>
+                <div class="progress-bar">
+                    <div class="progress progress-blue" style="width: 80%;"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Software Engineering</div>
+                <div class="card-value">75%</div>
+                <div class="card-subtitle">6 days attended out of 8</div>
+                <div class="progress-bar">
+                    <div class="progress progress-orange" style="width: 75%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">Attendance Details</div>
+                <div class="filter-container">
+                    <select class="filter-select" id="subject-filter">
+                        <option value="all">All Subjects</option>
+                        <option value="network">Network Security</option>
+                        <option value="database">Database Management</option>
+                        <option value="software">Software Engineering</option>
+                    </select>
+                    <select class="filter-select" id="month-filter">
+                        <option value="may">May 2025</option>
+                        <option value="april">April 2025</option>
+                        <option value="march">March 2025</option>
+                    </select>
+                </div>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>May 3, 2025</td>
+                        <td>Network Security</td>
+                        <td>10:00 AM - 12:00 PM</td>
+                        <td><span class="status present">Present</span></td>
+                    </tr>
+                    <tr>
+                        <td>May 2, 2025</td>
+                        <td>Database Management</td>
+                        <td>2:00 PM - 4:00 PM</td>
+                        <td><span class="status present">Present</span></td>
+                    </tr>
+                    <tr>
+                        <td>May 1, 2025</td>
+                        <td>Software Engineering</td>
+                        <td>9:00 AM - 11:00 AM</td>
+                        <td><span class="status late">Late</span></td>
+                    </tr>
+                    <tr>
+                        <td>April 30, 2025</td>
+                        <td>Network Security</td>
+                        <td>10:00 AM - 12:00 PM</td>
+                        <td><span class="status present">Present</span></td>
+                    </tr>
+                    <tr>
+                        <td>April 29, 2025</td>
+                        <td>Database Management</td>
+                        <td>2:00 PM - 4:00 PM</td>
+                        <td><span class="status absent">Absent</span></td>
+                    </tr>
+                    <tr>
+                        <td>April 28, 2025</td>
+                        <td>Software Engineering</td>
+                        <td>9:00 AM - 11:00 AM</td>
+                        <td><span class="status present">Present</span></td>
+                    </tr>
+                    <tr>
+                        <td>April 27, 2025</td>
+                        <td>Network Security</td>
+                        <td>10:00 AM - 12:00 PM</td>
+                        <td><span class="status present">Present</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <div class="table-title">May 2025</div>
+                <div class="month-nav">
+                    <button id="prev-month">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="current-month">May 2025</div>
+                    <button id="next-month">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="calendar">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+                
+                <!-- Empty cells for days before the 1st of May -->
+                <div class="day"></div>
+                <div class="day"></div>
+                <div class="day"></div>
+                
+                <div class="day">
+                    <div class="day-number">1</div>
+                    <div class="day-status late"></div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">2</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day present selected">
+                    <div class="day-number">3</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day">
+                    <div class="day-number">4</div>
+                </div>
+                
+                <div class="day">
+                    <div class="day-number">5</div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">6</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">7</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">8</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day absent">
+                    <div class="day-number">9</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day">
+                    <div class="day-number">10</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">11</div>
+                </div>
+                
+                <div class="day">
+                    <div class="day-number">12</div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">13</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">14</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day late">
+                    <div class="day-number">15</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day present">
+                    <div class="day-number">16</div>
+                    <div class="day-status"></div>
+                </div>
+                <div class="day">
+                    <div class="day-number">17</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">18</div>
+                </div>
+                
+                <div class="day">
+                    <div class="day-number">19</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">20</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">21</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">22</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">23</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">24</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">25</div>
+                </div>
+                
+                <div class="day">
+                    <div class="day-number">26</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">27</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">28</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">29</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">30</div>
+                </div>
+                <div class="day">
+                    <div class="day-number">31</div>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color legend-present"></div>
+                    <span>Present</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-absent"></div>
+                    <span>Absent</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color legend-late"></div>
+                    <span>Late</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for filtering functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const subjectFilter = document.getElementById('subject-filter');
+            const monthFilter = document.getElementById('month-filter');
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            // Filter function
+            function filterTable() {
+                const selectedSubject = subjectFilter.value;
+                const selectedMonth = monthFilter.value;
+                
+                tableRows.forEach(row => {
+                    const subject = row.cells[1].textContent.toLowerCase();
+                    const date = row.cells[0].textContent.toLowerCase();
+                    
+                    const subjectMatch = selectedSubject === 'all' || subject.includes(selectedSubject);
+                    const monthMatch = selectedMonth === 'all' || date.includes(selectedMonth);
+                    
+                    if (subjectMatch && monthMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Add event listeners
+            subjectFilter.addEventListener('change', filterTable);
+            monthFilter.addEventListener('change', filterTable);
+            
+            // Calendar day selection
+            const days = document.querySelectorAll('.day');
+            days.forEach(day => {
+                if (day.querySelector('.day-number')) {
+                    day.addEventListener('click', function() {
+                        days.forEach(d => d.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                }
+            });
+            
+            // Month navigation
+            const prevMonth = document.getElementById('prev-month');
+            const nextMonth = document.getElementById('next-month');
+            const currentMonthEl = document.querySelector('.current-month');
+            
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            let currentMonthIndex = 4; // May (0-indexed)
+            let currentYear = 2025;
+            
+            prevMonth.addEventListener('click', function() {
+                currentMonthIndex--;
+                if (currentMonthIndex < 0) {
+                    currentMonthIndex = 11;
+                    currentYear--;
+                }
+                currentMonthEl.textContent = `${months[currentMonthIndex]} ${currentYear}`;
+                document.querySelector('.calendar-header .table-title').textContent = `${months[currentMonthIndex]} ${currentYear}`;
+            });
+            
+            nextMonth.addEventListener('click', function() {
+                currentMonthIndex++;
+                if (currentMonthIndex > 11) {
+                    currentMonthIndex = 0;
+                    currentYear++;
+                }
+                currentMonthEl.textContent = `${months[currentMonthIndex]} ${currentYear}`;
+                document.querySelector('.calendar-header .table-title').textContent = `${months[currentMonthIndex]} ${currentYear}`;
+            });
+        });
+
+        (function() {
+            var theme = localStorage.getItem('student-theme');
+            if (theme === 'dark') {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+</body>
+</html>

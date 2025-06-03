@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Interface</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #34495e;
+            --border-color: #e0e0e0;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+        
+        .header-icon {
+            margin-right: 15px;
+            background-color: #e1f0fa;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background-color: #e3fcef;
+            color: var(--success-color);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .info-item {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .info-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .info-item p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .detail-label {
+            flex: 0 0 200px;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .amenity-tag {
+            background-color: #f0f3f8;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .amenity-tag i {
+            margin-right: 7px;
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: #e6f3fb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .room-card {
+            display: flex;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .room-image {
+            flex: 0 0 150px;
+            background-color: #e1e1e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .room-details {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .room-type {
+            font-weight: 600;
+        }
+        
+        .room-price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .status-circle {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-available {
+            background-color: var(--success-color);
+        }
+        
+        .status-occupied {
+            background-color: var(--danger-color);
+        }
+        
+        .status-maintenance {
+            background-color: var(--warning-color);
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            position: relative;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+        }
+        
+        .tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        /* DARK THEME SUPPORT */
+        body.dark-theme, .dark-theme body {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .container, .dark-theme .hostel-card, .dark-theme .header, .dark-theme .room-list, .dark-theme .room-card {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+        }
+        .dark-theme .btn-outline {
+            background-color: transparent !important;
+            border: 1px solid #3a86ff !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme .room-info, .dark-theme .hostel-info, .dark-theme .info-label {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .badge {
+            background-color: #333a4d !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme, .dark-theme body {
+            color: #f5f7fa !important;
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme label, .dark-theme .header, .dark-theme .btn, .dark-theme .btn-primary {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .settings-description, .dark-theme .info-label, .dark-theme .btn-outline, .dark-theme .badge {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .info-item p, .dark-theme .detail-value {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .card, .dark-theme .info-item, .dark-theme .room-card {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">🏠</div>
+            <h1>Hostel Management</h1>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Sunrise Student Hostel</h2>
+                <span class="badge badge-success">Currently Residing</span>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>Room Number</h3>
+                    <p>B304</p>
+                </div>
+                <div class="info-item">
+                    <h3>Room Type</h3>
+                    <p>Double Sharing</p>
+                </div>
+                <div class="info-item">
+                    <h3>Check-in Date</h3>
+                    <p>August 15, 2024</p>
+                </div>
+                <div class="info-item">
+                    <h3>Expected Check-out</h3>
+                    <p>June 10, 2025</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active">Hostel Details</div>
+                <div class="tab">Room Information</div>
+                <div class="tab">Payments</div>
+                <div class="tab">Complaints</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Hostel Details</h2>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Hostel Name</div>
+                <div class="detail-value">Sunrise Student Hostel</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Address</div>
+                <div class="detail-value">123 Campus Road, University District</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Contact Number</div>
+                <div class="detail-value">+1 (555) 234-5678</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Warden Name</div>
+                <div class="detail-value">Dr. Sarah Johnson</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Email</div>
+                <div class="detail-value">sunrise.hostel@university.edu</div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Facilities</div>
+                <div class="detail-value">
+                    <div class="amenities">
+                        <div class="amenity-tag"><i>✓</i> Wi-Fi</div>
+                        <div class="amenity-tag"><i>✓</i> Laundry</div>
+                        <div class="amenity-tag"><i>✓</i> Canteen</div>
+                        <div class="amenity-tag"><i>✓</i> Study Room</div>
+                        <div class="amenity-tag"><i>✓</i> Recreation Area</div>
+                        <div class="amenity-tag"><i>✓</i> 24/7 Security</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">Rules & Regulations</div>
+                <div class="detail-value">
+                    <p>• Curfew Time: 10:00 PM</p>
+                    <p>• Visitors allowed between 9:00 AM - 8:00 PM</p>
+                    <p>• No smoking or alcohol allowed in premises</p>
+                    <p>• Maintaining cleanliness is mandatory</p>
+                    <p>• Excessive noise prohibited after 9:00 PM</p>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn">Request Maintenance</button>
+                <button class="btn btn-outline">Download Hostel Guidelines</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2>Available Rooms</h2>
+            </div>
+            
+            <div class="room-card">
+                <div class="room-image">Room Image</div>
+                <div class="room-details">
+                    <div class="room-header">
+                        <div class="room-type">Single Room</div>
+                        <div class="room-price">$350/month</div>
+                    </div>
+                    <p>Private room with attached bathroom, study table, chair, bed, and wardrobe.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="status-circle status-available"></span> 3 rooms available
+                    </div>
+                </div>
+            </div>
+            
+            <div class="room-card">
+                <div class="room-image">Room Image</div>
+                <div class="room-details">
+                    <div class="room-header">
+                        <div class="room-type">Double Sharing</div>
+                        <div class="room-price">$250/month</div>
+                    </div>
+                    <p>Shared room with two beds, study tables, chairs, and wardrobes. Common bathroom facilities.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="status-circle status-available"></span> 5 rooms available
+                    </div>
+                </div>
+            </div>
+            
+            <div class="room-card">
+                <div class="room-image">Room Image</div>
+                <div class="room-details">
+                    <div class="room-header">
+                        <div class="room-type">Deluxe Room</div>
+                        <div class="room-price">$450/month</div>
+                    </div>
+                    <p>Premium single room with attached bathroom, AC, mini-fridge, study table, chair, and wardrobe.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="status-circle status-occupied"></span> Currently unavailable
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+      var theme = localStorage.getItem('student-theme');
+      if (theme === 'dark') {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+      }
+    })();
+    </script>
+</body>
+</html>

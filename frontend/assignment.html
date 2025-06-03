@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-box {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 250px;
+        }
+        
+        .filter-btn {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .new-assignment-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .new-assignment-btn:hover {
+            background-color: #1557b0;
+        }
+        
+        .assignments-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .assignments-header {
+            display: grid;
+            grid-template-columns: 0.8fr 1fr 1fr 2fr 0.5fr;
+            background-color: #f5f5f7;
+            padding: 12px 20px;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .assignment-item {
+            display: grid;
+            grid-template-columns: 0.8fr 1fr 1fr 2fr 0.5fr;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .assignment-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .assignment-date {
+            color: #333;
+        }
+        
+        .assignment-subject {
+            font-weight: 500;
+        }
+        
+        .assignment-class {
+            color: #555;
+        }
+        
+        .assignment-syllabus {
+            color: #555;
+            line-height: 1.4;
+        }
+        
+        .status-badge {
+            text-align: center;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #FFF0E0;
+            color: #FF8C00;
+        }
+        
+        .status-submitted {
+            background-color: #E2F5EA;
+            color: #28a745;
+        }
+        
+        .status-late {
+            background-color: #FFE8E8;
+            color: #dc3545;
+        }
+        
+        .assignment-action {
+            text-align: center;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #1a73e8;
+        }
+        
+        .action-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+        
+        .page-info {
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .page-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-btn {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .page-btn:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+        
+        .page-btn.active {
+            background-color: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+        
+        .page-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* DARK THEME SUPPORT */
+        body.dark-theme, .dark-theme body {
+            background-color: #181c24 !important;
+            color: #f5f7fa !important;
+        }
+        .dark-theme .container, .dark-theme .assignments-container, .dark-theme .header, .dark-theme .table-container, .dark-theme .assignment-card {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .new-assignment-btn {
+            background-color: #3a86ff !important;
+            color: #fff !important;
+        }
+        .dark-theme .btn-outline {
+            background-color: transparent !important;
+            border: 1px solid #3a86ff !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme .assignment-info, .dark-theme .assignment-title, .dark-theme .assignment-description {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme .badge, .dark-theme .status-badge {
+            background-color: #333a4d !important;
+            color: #3a86ff !important;
+        }
+        .dark-theme table, .dark-theme th, .dark-theme td {
+            background-color: #232a36 !important;
+            color: #f5f7fa !important;
+            border-color: #333a4d !important;
+        }
+        .dark-theme, .dark-theme body {
+            color: #f5f7fa !important;
+        }
+        .dark-theme h1, .dark-theme h2, .dark-theme h3, .dark-theme .assignment-subject, .dark-theme .assignment-syllabus, .dark-theme .btn, .dark-theme .btn-primary, .dark-theme .new-assignment-btn {
+            color: #f5f7fa !important;
+        }
+        .dark-theme .assignment-class, .dark-theme .assignment-date, .dark-theme .btn-outline, .dark-theme .badge, .dark-theme .status-badge {
+            color: #e2e8f0 !important;
+        }
+        .dark-theme td, .dark-theme th, .dark-theme .assignment-item {
+            color: #f5f7fa !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Assignments</h1>
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search assignments...">
+            <button class="filter-btn">Filter</button>
+            <button class="new-assignment-btn">New Assignment</button>
+        </div>
+    </div>
+    
+    <div class="assignments-container">
+        <div class="assignments-header">
+            <div>Date</div>
+            <div>Subject</div>
+            <div>Class</div>
+            <div>Syllabus</div>
+            <div>Status</div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">May 05, 2025</div>
+            <div class="assignment-subject">Database Management</div>
+            <div class="assignment-class">DBS-303</div>
+            <div class="assignment-syllabus">Create an ER diagram for a library management system and implement it in SQL.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-pending">Pending</span>
+            </div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">May 02, 2025</div>
+            <div class="assignment-subject">Network Security</div>
+            <div class="assignment-class">NET-401</div>
+            <div class="assignment-syllabus">Configure a firewall and document your security policy implementation.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-submitted">Submitted</span>
+            </div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">April 28, 2025</div>
+            <div class="assignment-subject">Software Engineering</div>
+            <div class="assignment-class">SWE-201</div>
+            <div class="assignment-syllabus">Develop a small application using Agile methodology and submit documentation.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-submitted">Submitted</span>
+            </div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">April 25, 2025</div>
+            <div class="assignment-subject">Artificial Intelligence</div>
+            <div class="assignment-class">AI-303</div>
+            <div class="assignment-syllabus">Implement a simple neural network for image classification using Python.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-submitted">Submitted</span>
+            </div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">April 20, 2025</div>
+            <div class="assignment-subject">Web Development</div>
+            <div class="assignment-class">WEB-202</div>
+            <div class="assignment-syllabus">Create a responsive portfolio website using HTML, CSS, and JavaScript.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-late">Late</span>
+            </div>
+        </div>
+        
+        <div class="assignment-item">
+            <div class="assignment-date">April 15, 2025</div>
+            <div class="assignment-subject">Computer Science</div>
+            <div class="assignment-class">CS-101</div>
+            <div class="assignment-syllabus">Write a research paper on emerging technologies in computing.</div>
+            <div class="assignment-action">
+                <span class="status-badge status-submitted">Submitted</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="pagination">
+        <div class="page-info">Showing 1-6 of 12 assignments</div>
+        <div class="page-controls">
+            <button class="page-btn" disabled>&lt;</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">&gt;</button>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.assignment-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // This would typically open the assignment details
+                console.log('Assignment clicked');
+            });
+        });
+        
+        document.querySelector('.filter-btn').addEventListener('click', function() {
+            alert('Filter options would appear here');
+        });
+        
+        document.querySelector('.new-assignment-btn').addEventListener('click', function() {
+            alert('New assignment form would appear here');
+        });
+        
+        document.querySelector('.search-box').addEventListener('input', function(e) {
+            const searchText = e.target.value.toLowerCase();
+            // Simple client-side search
+            document.querySelectorAll('.assignment-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchText)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Page navigation simulation
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            if (!btn.disabled && !btn.classList.contains('active')) {
+                btn.addEventListener('click', function() {
+                    document.querySelector('.page-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                });
+            }
+        });
+
+        (function() {
+            var theme = localStorage.getItem('student-theme');
+            if (theme === 'dark') {
+                document.body.classList.remove('light-theme');
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+</body>
+</html>
